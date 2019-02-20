@@ -65,60 +65,7 @@ function createFilters() {
     }
 }
 
-function createCards() {
-    const configCards = [
-        {
-            edit: false,
-            repeat: false,
-            deadline: false,
-            color: `black`,
-            text: `task #1`
-        },
-        {
-            edit: false,
-            repeat: true,
-            deadline: true,
-            color: `yellow`,
-            text: `task #2`
-        },
-        {
-            edit: false,
-            repeat: true,
-            deadline: false,
-            color: `blue`,
-            text: `task #3`
-        },
-        {
-            edit: true,
-            repeat: false,
-            deadline: true,
-            color: `green`,
-            text: `task #4`
-        },
-        {
-            edit: true,
-            repeat: true,
-            deadline: false,
-            color: `pink`,
-            text: `task #5`
-        },,
-        {
-            edit: false,
-            repeat: false,
-            deadline: false,
-            color: `green`,
-            text: `task #6`
-        },
-        {
-            edit: false,
-            repeat: true,
-            deadline: false,
-            color: `yellow`,
-            text: `task #7`
-        }
-        
-    ];
-
+function createCards(configCards) {
     const boardTasks = document.getElementsByClassName(`board__tasks`)[0];
 
     if (boardTasks) {
@@ -449,5 +396,32 @@ function createCards() {
     }
 }
 
+function generateCards(count = 0){
+    const colorCard = [`black`, `yellow`, `green`, `blue`, `pink`]
+    const cards = [];
+
+    for (let i = 0; i < count; i++) {
+        const card = {};
+
+        card.edit = (Math.random() - 0.8) > 0 ? true : false;
+        card.repeat = (Math.random() - 0.5) > 0 ? true : false;
+        card.deadline = (Math.random() - 0.8) > 0 ? true : false;
+        card.color = colorCard[Math.round( Math.random() * 5)];
+        card.text = `task #${i + 1}`;
+
+        cards.push(card);
+    }
+    
+    return cards;
+}
+
 createFilters();
-createCards();
+createCards(generateCards(7));
+
+const elementsFilter = document.getElementsByClassName('filter__label');
+
+for (let i = 0; i < elementsFilter.length; i++) {
+    elementsFilter[i].addEventListener(`click`, (event) => {
+        createCards(generateCards(Math.round( Math.random() * 7)));
+    });    
+}
