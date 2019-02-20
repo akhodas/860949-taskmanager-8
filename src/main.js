@@ -1,50 +1,52 @@
+'use strict';
+
 function createFilters() {
-    const configFilters = [
-        {
-            id: `all`,
-            count: 9,
-            checked: true
-        },
-        {
-            id: `overdue`,
-            count: 8
-        },
-        {
-            id: `today`,
-            count: 7
-        },
-        {
-            id: `favorites`,
-            count: 0
-        },
-        {
-            id: `repeating`,
-            count: 5
-        },
-        {
-            id: `tags`,
-            count: 4
-        },
-        {
-            id: `archive`,
-            count: 3
-        }
-    ];
-
-    const mainFilter = document.getElementsByClassName(`main__filter`)[0];
-
-    if (mainFilter) {
-        const filters = createFiltersList(configFilters);
-
-        mainFilter.innerHTML = filters;
+  const configFilters = [
+    {
+      id: `all`,
+      count: 9,
+      checked: true
+    },
+    {
+      id: `overdue`,
+      count: 8
+    },
+    {
+      id: `today`,
+      count: 7
+    },
+    {
+      id: `favorites`,
+      count: 0
+    },
+    {
+      id: `repeating`,
+      count: 5
+    },
+    {
+      id: `tags`,
+      count: 4
+    },
+    {
+      id: `archive`,
+      count: 3
     }
+  ];
 
-    function createFiltersList(configFilters = []) {
-        return configFilters.reduce((result, current) => result + createFilter(current), ``);
-    }
+  const mainFilter = document.getElementsByClassName(`main__filter`)[0];
 
-    function createFilter(configFilter) {
-        const result = `
+  if (mainFilter) {
+    const filters = createFiltersList(configFilters);
+
+    mainFilter.innerHTML = filters;
+  }
+
+  function createFiltersList(config = []) {
+    return config.reduce((result, current) => result + createFilter(current), ``);
+  }
+
+  function createFilter(configFilter) {
+    const result = `
         <input
             type="radio"
             id="filter__${configFilter.id}"
@@ -61,25 +63,25 @@ function createFilters() {
         </label>
     `;
 
-        return result;
-    }
+    return result;
+  }
 }
 
 function createCards(configCards) {
-    const boardTasks = document.getElementsByClassName(`board__tasks`)[0];
+  const boardTasks = document.getElementsByClassName(`board__tasks`)[0];
 
-    if (boardTasks) {
-        const cards = createCardsList(configCards);
+  if (boardTasks) {
+    const cards = createCardsList(configCards);
 
-        boardTasks.innerHTML = cards;
-    }
+    boardTasks.innerHTML = cards;
+  }
 
-    function createCardsList(configCards = []) {
-        return configCards.reduce((result, current) => result + createCard(current), ``);
-    }
+  function createCardsList(config = []) {
+    return config.reduce((result, current) => result + createCard(current), ``);
+  }
 
-    function createCard(configCard) {
-        const result = `
+  function createCard(configCard) {
+    const result = `
         <article class="card 
         ${configCard.edit ? `card--edit` : ``}
         ${configCard.repeat ? `card--repeat` : ``}
@@ -392,36 +394,36 @@ function createCards(configCards) {
           </article>
     `;
 
-        return result;
-    }
+    return result;
+  }
 }
 
-function generateCards(count = 0){
-    const colorCard = [`black`, `yellow`, `green`, `blue`, `pink`]
-    const cards = [];
+function generateCards(count = 0) {
+  const colorCard = [`black`, `yellow`, `green`, `blue`, `pink`];
+  const cards = [];
 
-    for (let i = 0; i < count; i++) {
-        const card = {};
+  for (let i = 0; i < count; i++) {
+    const card = {};
 
-        card.edit = (Math.random() - 0.8) > 0 ? true : false;
-        card.repeat = (Math.random() - 0.5) > 0 ? true : false;
-        card.deadline = (Math.random() - 0.8) > 0 ? true : false;
-        card.color = colorCard[Math.round( Math.random() * 5)];
-        card.text = `task #${i + 1}`;
+    card.edit = (Math.random() - 0.8) > 0 ? true : false;
+    card.repeat = (Math.random() - 0.5) > 0 ? true : false;
+    card.deadline = (Math.random() - 0.8) > 0 ? true : false;
+    card.color = colorCard[Math.round(Math.random() * 5)];
+    card.text = `task #${i + 1}`;
 
-        cards.push(card);
-    }
-    
-    return cards;
+    cards.push(card);
+  }
+
+  return cards;
 }
 
 createFilters();
 createCards(generateCards(7));
 
-const elementsFilter = document.getElementsByClassName('filter__label');
+const elementsFilter = document.getElementsByClassName(`filter__label`);
 
 for (let i = 0; i < elementsFilter.length; i++) {
-    elementsFilter[i].addEventListener(`click`, (event) => {
-        createCards(generateCards(Math.round( Math.random() * 7)));
-    });    
+  elementsFilter[i].addEventListener(`click`, () => {
+    createCards(generateCards(Math.round(Math.random() * 7)));
+  });
 }
