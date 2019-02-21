@@ -1,6 +1,6 @@
 'use strict';
 
-function createFilters() {
+function drawFilters() {
   const configFilters = [
     {
       id: `all`,
@@ -42,7 +42,7 @@ function createFilters() {
   }
 
   function createFiltersList(config = []) {
-    return config.reduce((result, current) => result + createFilter(current), ``);
+    return config.map(createFilter).join(``);
   }
 
   function createFilter(configFilter) {
@@ -67,7 +67,7 @@ function createFilters() {
   }
 }
 
-function createCards(configCards) {
+function drawCards(configCards) {
   const boardTasks = document.getElementsByClassName(`board__tasks`)[0];
 
   if (boardTasks) {
@@ -77,7 +77,7 @@ function createCards(configCards) {
   }
 
   function createCardsList(config = []) {
-    return config.reduce((result, current) => result + createCard(current), ``);
+    return config.map(createCard).join(``);
   }
 
   function createCard(configCard) {
@@ -398,7 +398,7 @@ function createCards(configCards) {
   }
 }
 
-function generateCards(count = 0) {
+function generateConfigCards(count = 0) {
   const colorCard = [`black`, `yellow`, `green`, `blue`, `pink`];
   const cards = [];
 
@@ -417,13 +417,13 @@ function generateCards(count = 0) {
   return cards;
 }
 
-createFilters();
-createCards(generateCards(7));
+drawFilters();
+drawCards(generateConfigCards(7));
 
 const elementsFilter = document.getElementsByClassName(`filter__label`);
 
 for (let i = 0; i < elementsFilter.length; i++) {
   elementsFilter[i].addEventListener(`click`, () => {
-    createCards(generateCards(Math.round(Math.random() * 7)));
+    drawCards(generateConfigCards(Math.round(Math.random() * 7)));
   });
 }
