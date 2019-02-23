@@ -86,94 +86,18 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/main.js":
-/*!*********************!*\
-  !*** ./src/main.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/***/ "./src/create-card.js":
+/*!****************************!*\
+  !*** ./src/create-card.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function drawFilters() {
-  const configFilters = [
-    {
-      id: `all`,
-      count: 9,
-      checked: true
-    },
-    {
-      id: `overdue`,
-      count: 8
-    },
-    {
-      id: `today`,
-      count: 7
-    },
-    {
-      id: `favorites`,
-      count: 0
-    },
-    {
-      id: `repeating`,
-      count: 5
-    },
-    {
-      id: `tags`,
-      count: 4
-    },
-    {
-      id: `archive`,
-      count: 3
-    }
-  ];
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ((config) => {
 
-  const mainFilter = document.getElementsByClassName(`main__filter`)[0];
-
-  if (mainFilter) {
-    const filters = createFiltersList(configFilters);
-
-    mainFilter.innerHTML = filters;
-  }
-
-  function createFiltersList(config = []) {
-    return config.map(createFilter).join(``);
-  }
-
-  function createFilter(configFilter) {
-    const result = `
-        <input
-            type="radio"
-            id="filter__${configFilter.id}"
-            class="filter__input visually-hidden"
-            name="filter"
-            ${configFilter.checked ? `checked` : ``}
-            ${configFilter.count ? `` : `disabled`}
-        />
-        <label for="filter__${configFilter.id}" class="filter__label">
-            ${configFilter.title || configFilter.id.toUpperCase()} 
-            <span class="filter__${configFilter.id}-count">
-                ${configFilter.count}
-            </span>
-        </label>
-    `;
-
-    return result;
-  }
-}
-
-function drawCards(configCards) {
-  const boardTasks = document.getElementsByClassName(`board__tasks`)[0];
-
-  if (boardTasks) {
-    const cards = createCardsList(configCards);
-
-    boardTasks.innerHTML = cards;
-  }
-
-  function createCardsList(config = []) {
-    return config.map(createCard).join(``);
-  }
-
-  function createCard(configCard) {
+  function createNewCard(configCard) {
     const result = `
         <article class="card 
         ${configCard.edit ? `card--edit` : ``}
@@ -392,6 +316,118 @@ function drawCards(configCards) {
     }
 
     return createCardHashtagList();
+  }
+
+  return createNewCard(config);
+});
+
+
+/***/ }),
+
+/***/ "./src/create-filter.js":
+/*!******************************!*\
+  !*** ./src/create-filter.js ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ((configFilter) => {
+  const result = `
+            <input
+                type="radio"
+                id="filter__${configFilter.id}"
+                class="filter__input visually-hidden"
+                name="filter"
+                ${configFilter.checked ? `checked` : ``}
+                ${configFilter.count ? `` : `disabled`}
+            />
+            <label for="filter__${configFilter.id}" class="filter__label">
+                ${configFilter.title || configFilter.id.toUpperCase()} 
+                <span class="filter__${configFilter.id}-count">
+                    ${configFilter.count}
+                </span>
+            </label>
+        `;
+
+  return result;
+});
+
+
+/***/ }),
+
+/***/ "./src/main.js":
+/*!*********************!*\
+  !*** ./src/main.js ***!
+  \*********************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _create_filter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./create-filter */ "./src/create-filter.js");
+/* harmony import */ var _create_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create-card */ "./src/create-card.js");
+
+
+
+function drawFilters() {
+  const configFilters = [
+    {
+      id: `all`,
+      count: 9,
+      checked: true
+    },
+    {
+      id: `overdue`,
+      count: 8
+    },
+    {
+      id: `today`,
+      count: 7
+    },
+    {
+      id: `favorites`,
+      count: 0
+    },
+    {
+      id: `repeating`,
+      count: 5
+    },
+    {
+      id: `tags`,
+      count: 4
+    },
+    {
+      id: `archive`,
+      count: 3
+    }
+  ];
+
+  const mainFilter = document.getElementsByClassName(`main__filter`)[0];
+
+  if (mainFilter) {
+    const filters = createFiltersList(configFilters);
+
+    mainFilter.innerHTML = filters;
+  }
+
+  function createFiltersList(config = []) {
+    return config.map(_create_filter__WEBPACK_IMPORTED_MODULE_0__["default"]).join(``);
+  }
+}
+
+function drawCards(configCards) {
+  const boardTasks = document.getElementsByClassName(`board__tasks`)[0];
+
+  if (boardTasks) {
+    const cards = createCardsList(configCards);
+
+    boardTasks.innerHTML = cards;
+  }
+
+  function createCardsList(config = []) {
+    return config.map(_create_card__WEBPACK_IMPORTED_MODULE_1__["default"]).join(``);
   }
 }
 
