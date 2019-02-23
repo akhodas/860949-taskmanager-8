@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const path = require(`path`);
 
 module.exports = {
@@ -5,8 +6,13 @@ module.exports = {
   entry: `./src/main.js`,
   output: {
     filename: `bundle.js`,
-    // eslint-disable-next-line no-undef
     path: path.join(__dirname, `public`)
   },
-  devtool: `source-map`
+  devtool: `source-map`,
+  devServer: {
+    contentBase: path.join(__dirname, `public`),
+    publicPath: `http://localhost:8080/`,
+    hot: true,
+    compress: true
+  }
 };
