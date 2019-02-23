@@ -46,52 +46,13 @@ export default (config) => {
                 <div class="card__settings">
                   <div class="card__details">
                     <div class="card__dates">
-                      <button class="card__date-deadline-toggle" type="button">
-                        date: 
-                        <span class="card__date-status">
-                            ${configCard.deadline ? `YES` : `NO`}
-                        </span>
-                      </button>
-
-                      ${configCard.deadline ? `
-                            <fieldset class="card__date-deadline">
-                                <label class="card__input-deadline-wrap">
-                                <input
-                                    class="card__date"
-                                    type="text"
-                                    placeholder="23 September"
-                                    name="date"
-                                    value="23 September"
-                                />
-                                </label>
-                                <label class="card__input-deadline-wrap">
-                                <input
-                                    class="card__time"
-                                    type="text"
-                                    placeholder="11:15 PM"
-                                    name="time"
-                                    value="11:15 PM"
-                                />
-                                </label>
-                            </fieldset>
-                      ` : ``}
-
-                      <button class="card__repeat-toggle" type="button">
-                        repeat:<span class="card__repeat-status">
-                            ${configCard.repeat ? `YES` : `NO`}
-                        </span>
-                      </button>
-
-                      <fieldset class="card__repeat-days">
-                        <div class="card__repeat-days-inner">
-                          ${createFeildRepeatDays()}                          
-                        </div>
-                      </fieldset>
+                      ${createFeildDeadline(configCard.deadline, configCard.deadlinePoint)}
+                      ${createFeildRepeatDays(configCard.repeat, configCard.repeatDays)}
                     </div>
 
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        ${createFeildCardHashtagList()}
+                        ${createFeildCardHashtagList(configCard.hashtags)}
                       </div>
 
                       <label>
@@ -138,30 +99,82 @@ export default (config) => {
     return result;
   }
 
-  function createFeildRepeatDays() {
+  function createFeildDeadline(deadline, deadlinePoint) {
+    const feildDeadline =
+            `
+            <button class="card__date-deadline-toggle" type="button">
+                date: <span class="card__date-status">
+                ${deadline ? `YES` : `NO`}
+                </span>
+            </button>
+        
+            ${deadline ? `
+                        <fieldset class="card__date-deadline">
+                            <label class="card__input-deadline-wrap">
+                            <input
+                                class="card__date"
+                                type="text"
+                                placeholder="23 September"
+                                name="date"
+                                value="${deadlinePoint.date}"
+                            />
+                            </label>
+                            <label class="card__input-deadline-wrap">
+                            <input
+                                class="card__time"
+                                type="text"
+                                placeholder="11:15 PM"
+                                name="time"
+                                value="${deadlinePoint.time}"
+                            />
+                            </label>
+                        </fieldset>
+                    ` : ``}`;
+
+    return feildDeadline;
+  }
+
+  function createFeildRepeatDays(repeat, repeatDays = []) {
+    const feildRepeatDays = `
+      <button class="card__repeat-toggle" type="button">
+        repeat:<span class="card__repeat-status">
+            ${repeat ? `YES` : `NO`}
+        </span>
+      </button>
+
+      ${repeat ? `
+                <fieldset class="card__repeat-days">
+                <div class="card__repeat-days-inner">
+                    ${createRepeatDays()}                          
+                </div>
+                </fieldset>
+            ` : ``}
+    `;
+
     function createRepeatDays() {
       const days = [`mo`, `tu`, `we`, `th`, `fr`, `sa`, `su`];
+
       return days.map(createRepeatDay).join(``);
     }
 
     function createRepeatDay(day) {
       const result = `
-        <input
-        class="visually-hidden card__repeat-day-input"
-        type="checkbox"
-        id="repeat-${day}-6"
-        name="repeat"
-        value="${day}"
-        ${(Math.random() - 0.5) > 0 ? `checked` : ``}
-        />
-        <label class="card__repeat-day" for="repeat-${day}-6"
-          >${day}</label
-        >
-      `;
+                    <input
+                        class="visually-hidden card__repeat-day-input"
+                        type="checkbox"
+                        id="repeat-${day}-6"
+                        name="repeat"
+                        value="${day}"
+                            ${(repeatDays.indexOf(day) === -1) ? `` : `checked`}
+                    />
+                    <label class="card__repeat-day" for="repeat-${day}-6">${day}
+                    </label>
+                `;
+
       return result;
     }
 
-    return createRepeatDays();
+    return feildRepeatDays;
   }
 
   function createFeildCardColorWrap(configColor) {
@@ -192,11 +205,7 @@ export default (config) => {
     return createCardsColorWrap();
   }
 
-  function createFeildCardHashtagList() {
-    function createCardHashtagList() {
-      const hashtagList = [`#repeat`, `#cinema`, `#entertaiment`];
-      return hashtagList.map(createCardHashtag).join(``);
-    }
+  function createFeildCardHashtagList(hashtags) {
 
     function createCardHashtag(hashtag) {
       const result = `
@@ -218,7 +227,7 @@ export default (config) => {
       return result;
     }
 
-    return createCardHashtagList();
+    return hashtags.map(createCardHashtag).join(``);
   }
 
   return createNewCard(config);
