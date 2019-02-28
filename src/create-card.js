@@ -1,4 +1,4 @@
-export default (config) => {
+function createCard(config) {
 
   function createNewCard(configCard) {
     const result = `
@@ -46,13 +46,13 @@ export default (config) => {
                 <div class="card__settings">
                   <div class="card__details">
                     <div class="card__dates">
-                      ${createFeildDeadline(configCard.deadline, configCard.deadlinePoint)}
-                      ${createFeildRepeatDays(configCard.repeat, configCard.repeatDays)}
+                      ${createFieldDeadline(configCard.deadline, configCard.deadlinePoint)}
+                      ${createFieldRepeatDays(configCard.repeat, configCard.repeatingDays)}
                     </div>
 
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        ${createFeildCardHashtagList(configCard.hashtags)}
+                        ${createFieldCardHashtagList(configCard.hashtags)}
                       </div>
 
                       <label>
@@ -73,7 +73,7 @@ export default (config) => {
                       name="img"
                     />
                     <img
-                      src="img/sample-img.jpg"
+                      src="${configCard.picture}"
                       alt="task picture"
                       class="card__img"
                     />
@@ -82,7 +82,7 @@ export default (config) => {
                   <div class="card__colors-inner">
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
-                      ${createFeildCardColorWrap(configCard.color)}
+                      ${createFieldCardColorWrap(configCard.color)}
                     </div>
                   </div>
                 </div>
@@ -99,7 +99,7 @@ export default (config) => {
     return result;
   }
 
-  function createFeildDeadline(deadline, deadlinePoint) {
+  function createFieldDeadline(deadline, deadlinePoint) {
     const feildDeadline =
             `
             <button class="card__date-deadline-toggle" type="button">
@@ -134,40 +134,52 @@ export default (config) => {
     return feildDeadline;
   }
 
-  function createFeildRepeatDays(repeat, repeatDays = []) {
+  function createFieldRepeatDays(repeat, repeatingDays) {
     const feildRepeatDays = `
       <button class="card__repeat-toggle" type="button">
         repeat:<span class="card__repeat-status">
-            ${repeat ? `YES` : `NO`}
-        </span>
+          ${checkingRepeating() ? `
+          YES</span>
       </button>
-
-      ${repeat ? `
-                <fieldset class="card__repeat-days">
-                <div class="card__repeat-days-inner">
-                    ${createRepeatDays()}                          
-                </div>
-                </fieldset>
-            ` : ``}
+      <fieldset class="card__repeat-days">
+        <div class="card__repeat-days-inner">
+          ${createRepeatDays()}                          
+        </div>
+      </fieldset>` : `
+          NO</span>
+      </button>`}
     `;
 
-    function createRepeatDays() {
-      const days = [`mo`, `tu`, `we`, `th`, `fr`, `sa`, `su`];
+    function checkingRepeating() {
+      for (const check of repeatingDays.values()) {
+        if (check) {
+          return true;
+        }
+      }
+      return false;
+    }
 
-      return days.map(createRepeatDay).join(``);
+    function createRepeatDays() {
+      const result = [];
+
+      for (const day of repeatingDays) {
+        result.push(createRepeatDay(day));
+      }
+
+      return result.join(``);
     }
 
     function createRepeatDay(day) {
       const result = `
                     <input
-                        class="visually-hidden card__repeat-day-input"
-                        type="checkbox"
-                        id="repeat-${day}-6"
-                        name="repeat"
-                        value="${day}"
-                            ${(repeatDays.indexOf(day) === -1) ? `` : `checked`}
+                      class="visually-hidden card__repeat-day-input"
+                      type="checkbox"
+                      id="repeat-${day[0]}-6"
+                      name="repeat"
+                      value="${day[0]}"
+                      ${day[1] ? `checked` : ``}
                     />
-                    <label class="card__repeat-day" for="repeat-${day}-6">${day}
+                    <label class="card__repeat-day" for="repeat-${day[0]}-6">${day[0]}
                     </label>
                 `;
 
@@ -177,7 +189,7 @@ export default (config) => {
     return feildRepeatDays;
   }
 
-  function createFeildCardColorWrap(configColor) {
+  function createFieldCardColorWrap(configColor) {
     function createCardsColorWrap() {
       const cardColor = [`black`, `yellow`, `green`, `blue`, `pink`];
       return cardColor.map(createCardColorWrap).join(``);
@@ -205,7 +217,7 @@ export default (config) => {
     return createCardsColorWrap();
   }
 
-  function createFeildCardHashtagList(hashtags) {
+  function createFieldCardHashtagList(hashtags) {
 
     function createCardHashtag(hashtag) {
       const result = `
@@ -231,4 +243,6 @@ export default (config) => {
   }
 
   return createNewCard(config);
-};
+}
+
+export default createCard;

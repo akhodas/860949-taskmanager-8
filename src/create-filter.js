@@ -1,4 +1,4 @@
-export default (configFilter) => {
+function createFilter(configFilter) {
   const result = `
             <input
                 type="radio"
@@ -17,4 +17,6 @@ export default (configFilter) => {
         `;
 
   return result;
-};
+}
+
+export default createFilter;

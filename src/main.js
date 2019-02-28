@@ -1,6 +1,8 @@
 import createFilter from "./create-filter";
 import createCard from './create-card';
 
+import generateConfigCards from './generate-config-card';
+
 function drawFilters() {
   const configFilters = [
     {
@@ -59,31 +61,6 @@ function drawCards(configCards) {
   function createCardsList(config = []) {
     return config.map(createCard).join(``);
   }
-}
-
-function generateConfigCards(count = 0) {
-  const colorCard = [`black`, `yellow`, `green`, `blue`, `pink`];
-  const cards = [];
-
-  for (let i = 0; i < count; i++) {
-    const card = {};
-
-    card.edit = (Math.random() - 0.8) > 0 ? true : false;
-    card.deadline = (Math.random() - 0.8) > 0 ? true : false;
-    card.deadlinePoint = {
-      date: `21 April 2019`,
-      time: `08:30 PM`
-    };
-    card.repeat = (Math.random() - 0.5) > 0 ? true : false;
-    card.repeatDays = [`mo`, `tu`, `we`, `th`, `fr`, `sa`, `su`];
-    card.hashtags = [`#cinema`, `#Minsk`, `#repeat`];
-    card.color = colorCard[Math.round(Math.random() * 5)];
-    card.text = `task #${i + 1}`;
-
-    cards.push(card);
-  }
-
-  return cards;
 }
 
 drawFilters();
