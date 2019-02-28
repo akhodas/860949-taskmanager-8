@@ -37,8 +37,7 @@ function createCard(config) {
                       class="card__text"
                       placeholder="Start typing your text here..."
                       name="text"
-                    >
-                        ${configCard.text}
+                    >${configCard.title}
                     </textarea>
                   </label>
                 </div>
@@ -220,7 +219,7 @@ function createCard(config) {
             class="card__hashtag-hidden-input"
           />
           <button type="button" class="card__hashtag-name">
-            ${hashtag}
+            #${hashtag}
           </button>
           <button type="button" class="card__hashtag-delete">
             delete
