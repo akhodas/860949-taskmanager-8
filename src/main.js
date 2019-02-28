@@ -3,38 +3,40 @@ import createCard from './create-card';
 
 import generateConfigCards from './generate-config-card';
 
-function drawFilters() {
-  const configFilters = [
-    {
-      id: `all`,
-      count: 9,
-      checked: true
-    },
-    {
-      id: `overdue`,
-      count: 8
-    },
-    {
-      id: `today`,
-      count: 7
-    },
-    {
-      id: `favorites`,
-      count: 0
-    },
-    {
-      id: `repeating`,
-      count: 5
-    },
-    {
-      id: `tags`,
-      count: 4
-    },
-    {
-      id: `archive`,
-      count: 3
-    }
-  ];
+const configurationFilters = [
+  {
+    id: `all`,
+    count: 9,
+    checked: true
+  },
+  {
+    id: `overdue`,
+    count: 8
+  },
+  {
+    id: `today`,
+    count: 7
+  },
+  {
+    id: `favorites`,
+    count: 0
+  },
+  {
+    id: `repeating`,
+    count: 5
+  },
+  {
+    id: `tags`,
+    count: 4
+  },
+  {
+    id: `archive`,
+    count: 3
+  }
+];
+
+const drawFilters = (configFilters) => {
+  const createFiltersList = (config = []) => config.map(createFilter).join(``);
 
   const mainFilter = document.getElementsByClassName(`main__filter`)[0];
 
@@ -44,12 +46,11 @@ function drawFilters() {
     mainFilter.innerHTML = filters;
   }
 
-  function createFiltersList(config = []) {
-    return config.map(createFilter).join(``);
-  }
-}
+};
 
-function drawCards(configCards) {
+const drawCards = (configCards) => {
+  const createCardsList = (config = []) => config.map(createCard).join(``);
+
   const boardTasks = document.getElementsByClassName(`board__tasks`)[0];
 
   if (boardTasks) {
@@ -58,12 +59,9 @@ function drawCards(configCards) {
     boardTasks.innerHTML = cards;
   }
 
-  function createCardsList(config = []) {
-    return config.map(createCard).join(``);
-  }
-}
+};
 
-drawFilters();
+drawFilters(configurationFilters);
 drawCards(generateConfigCards(7));
 
 const elementsFilter = document.getElementsByClassName(`filter__label`);

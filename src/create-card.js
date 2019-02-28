@@ -1,7 +1,137 @@
-function createCard(config) {
+const createCard = (config) => {
 
-  function createNewCard(configCard) {
-    const result = `
+  const checkingMapOnTrueValue = (chekingMap) => {
+    for (const value of chekingMap.values()) {
+      if (value) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const createListCardHashtag = (hashtags) => {
+    const createCardHashtag = (hashtag) => {
+      return `
+        <span class="card__hashtag-inner">
+          <input
+            type="hidden"
+            name="hashtag"
+            value="repeat"
+            class="card__hashtag-hidden-input"
+          />
+          <button type="button" class="card__hashtag-name">
+            #${hashtag}
+          </button>
+          <button type="button" class="card__hashtag-delete">
+            delete
+          </button>
+        </span>
+      `;
+    };
+
+    return hashtags.map(createCardHashtag).join(``);
+  };
+
+  const createListCardColorWrap = (configColor) => {
+    const cardColor = [`black`, `yellow`, `green`, `blue`, `pink`];
+    const createCardColorWrap = (color) => {
+      return `
+        <input
+          type="radio"
+          id="color-${color}-6"
+          class="card__color-input card__color-input--${color} visually-hidden"
+          name="color"
+          value="${color}"
+          ${(configColor === color) ? `checked` : ``}
+        />
+        <label
+          for="color-${color}-6"
+          class="card__color card__color--${color}"
+          >${color}</label
+        >
+      `;
+    };
+
+    return cardColor.map((current) => createCardColorWrap(current, configColor)).join(``);
+  };
+
+  const createFieldRepeatDays = (repeatingDays) => {
+    const createRepeatDay = (day) => {
+      return `
+                    <input
+                      class="visually-hidden card__repeat-day-input"
+                      type="checkbox"
+                      id="repeat-${day[0]}-6"
+                      name="repeat"
+                      value="${day[0]}"
+                      ${day[1] ? `checked` : ``}
+                    />
+                    <label class="card__repeat-day" for="repeat-${day[0]}-6">${day[0]}
+                    </label>
+                `;
+    };
+
+    const createRepeatDays = (mapRepeatingDays) => {
+      const result = [];
+
+      for (const day of mapRepeatingDays) {
+        result.push(createRepeatDay(day));
+      }
+
+      return result.join(``);
+    };
+
+    return `
+      <button class="card__repeat-toggle" type="button">
+        repeat:<span class="card__repeat-status">
+          ${checkingMapOnTrueValue(repeatingDays) ? `
+          YES</span>
+      </button>
+      <fieldset class="card__repeat-days">
+        <div class="card__repeat-days-inner">
+          ${createRepeatDays(repeatingDays)}                          
+        </div>
+      </fieldset>` : `
+          NO</span>
+      </button>`}
+    `;
+  };
+
+  const createFieldDeadline = (deadline, deadlinePoint) => {
+    return `
+            <button class="card__date-deadline-toggle" type="button">
+                date: <span class="card__date-status">
+                ${deadline ? `YES` : `NO`}
+                </span>
+            </button>
+
+            ${deadline ? `
+                        <fieldset class="card__date-deadline">
+                            <label class="card__input-deadline-wrap">
+                            <input
+                                class="card__date"
+                                type="text"
+                                placeholder="23 September"
+                                name="date"
+                                value="${deadlinePoint.date}"
+                            />
+                            </label>
+                            <label class="card__input-deadline-wrap">
+                            <input
+                                class="card__time"
+                                type="text"
+                                placeholder="11:15 PM"
+                                name="time"
+                                value="${deadlinePoint.time}"
+                            />
+                            </label>
+                        </fieldset>
+                    ` : ``}`;
+  };
+
+  const createNewCard = (configCard) => {
+    return `
         <article class="card 
         ${configCard.edit ? `card--edit` : ``}
         ${checkingMapOnTrueValue(configCard.repeatingDays) ? `card--repeat` : ``}
@@ -51,7 +181,7 @@ function createCard(config) {
 
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        ${createFieldCardHashtagList(configCard.hashtags)}
+                        ${createListCardHashtag(configCard.hashtags)}
                       </div>
 
                       <label>
@@ -81,7 +211,7 @@ function createCard(config) {
                   <div class="card__colors-inner">
                     <h3 class="card__colors-title">Color</h3>
                     <div class="card__colors-wrap">
-                      ${createFieldCardColorWrap(configCard.color)}
+                      ${createListCardColorWrap(configCard.color)}
                     </div>
                   </div>
                 </div>
@@ -94,155 +224,9 @@ function createCard(config) {
             </form>
           </article>
     `;
-
-    return result;
-  }
-
-  function createFieldDeadline(deadline, deadlinePoint) {
-    const feildDeadline =
-            `
-            <button class="card__date-deadline-toggle" type="button">
-                date: <span class="card__date-status">
-                ${deadline ? `YES` : `NO`}
-                </span>
-            </button>
-        
-            ${deadline ? `
-                        <fieldset class="card__date-deadline">
-                            <label class="card__input-deadline-wrap">
-                            <input
-                                class="card__date"
-                                type="text"
-                                placeholder="23 September"
-                                name="date"
-                                value="${deadlinePoint.date}"
-                            />
-                            </label>
-                            <label class="card__input-deadline-wrap">
-                            <input
-                                class="card__time"
-                                type="text"
-                                placeholder="11:15 PM"
-                                name="time"
-                                value="${deadlinePoint.time}"
-                            />
-                            </label>
-                        </fieldset>
-                    ` : ``}`;
-
-    return feildDeadline;
-  }
-
-  function createFieldRepeatDays(repeatingDays) {
-    const feildRepeatDays = `
-      <button class="card__repeat-toggle" type="button">
-        repeat:<span class="card__repeat-status">
-          ${checkingMapOnTrueValue(repeatingDays) ? `
-          YES</span>
-      </button>
-      <fieldset class="card__repeat-days">
-        <div class="card__repeat-days-inner">
-          ${createRepeatDays()}                          
-        </div>
-      </fieldset>` : `
-          NO</span>
-      </button>`}
-    `;
-
-    function createRepeatDays() {
-      const result = [];
-
-      for (const day of repeatingDays) {
-        result.push(createRepeatDay(day));
-      }
-
-      return result.join(``);
-    }
-
-    function createRepeatDay(day) {
-      const result = `
-                    <input
-                      class="visually-hidden card__repeat-day-input"
-                      type="checkbox"
-                      id="repeat-${day[0]}-6"
-                      name="repeat"
-                      value="${day[0]}"
-                      ${day[1] ? `checked` : ``}
-                    />
-                    <label class="card__repeat-day" for="repeat-${day[0]}-6">${day[0]}
-                    </label>
-                `;
-
-      return result;
-    }
-
-    return feildRepeatDays;
-  }
-
-  function createFieldCardColorWrap(configColor) {
-    function createCardsColorWrap() {
-      const cardColor = [`black`, `yellow`, `green`, `blue`, `pink`];
-      return cardColor.map(createCardColorWrap).join(``);
-    }
-
-    function createCardColorWrap(color) {
-      const result = `
-        <input
-          type="radio"
-          id="color-${color}-6"
-          class="card__color-input card__color-input--${color} visually-hidden"
-          name="color"
-          value="${color}"
-          ${(configColor === color) ? `checked` : ``}
-        />
-        <label
-          for="color-${color}-6"
-          class="card__color card__color--${color}"
-          >${color}</label
-        >
-      `;
-      return result;
-    }
-
-    return createCardsColorWrap();
-  }
-
-  function createFieldCardHashtagList(hashtags) {
-
-    function createCardHashtag(hashtag) {
-      const result = `
-        <span class="card__hashtag-inner">
-          <input
-            type="hidden"
-            name="hashtag"
-            value="repeat"
-            class="card__hashtag-hidden-input"
-          />
-          <button type="button" class="card__hashtag-name">
-            #${hashtag}
-          </button>
-          <button type="button" class="card__hashtag-delete">
-            delete
-          </button>
-        </span>
-      `;
-      return result;
-    }
-
-    return hashtags.map(createCardHashtag).join(``);
-  }
-
-  function checkingMapOnTrueValue(chekingMap) {
-    for (const value of chekingMap.values()) {
-      if (value) {
-        return true;
-      }
-    }
-
-    return false;
-  }
+  };
 
   return createNewCard(config);
-}
+};
 
 export default createCard;
