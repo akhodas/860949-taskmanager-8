@@ -1,5 +1,6 @@
 import createFilter from "./create-filter";
 import createCard from './create-card';
+import drawField from './draw-field';
 
 import generateConfigCards from './generate-config-card';
 
@@ -38,27 +39,13 @@ const configurationFilters = [
 const drawFilters = (configFilters) => {
   const createFiltersList = (config = []) => config.map(createFilter).join(``);
 
-  const mainFilter = document.getElementsByClassName(`main__filter`)[0];
-
-  if (mainFilter) {
-    const filters = createFiltersList(configFilters);
-
-    mainFilter.innerHTML = filters;
-  }
-
+  drawField(`main__filter`, createFiltersList(configFilters));
 };
 
 const drawCards = (configCards) => {
   const createCardsList = (config = []) => config.map(createCard).join(``);
 
-  const boardTasks = document.getElementsByClassName(`board__tasks`)[0];
-
-  if (boardTasks) {
-    const cards = createCardsList(configCards);
-
-    boardTasks.innerHTML = cards;
-  }
-
+  drawField(`board__tasks`, createCardsList(configCards));
 };
 
 drawFilters(configurationFilters);

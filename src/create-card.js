@@ -130,7 +130,7 @@ const createCard = (config) => {
                     ` : ``}`;
   };
 
-  const createNewCard = (configCard) => {
+  return ((configCard) => {
     return `
         <article class="card 
         ${configCard.edit ? `card--edit` : ``}
@@ -224,9 +224,7 @@ const createCard = (config) => {
             </form>
           </article>
     `;
-  };
-
-  return createNewCard(config);
+  })(config);
 };
 
 export default createCard;
