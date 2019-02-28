@@ -11,15 +11,14 @@ function generateConfigCards(count = 0) {
       date: `21 April 2019`,
       time: `08:30 PM`
     };
-    card.repeat = (Math.random() - 0.5) > 0 ? true : false;
     card.repeatingDays = new Map([
-      [`mo`, true],
+      [`mo`, false],
       [`tu`, false],
-      [`we`, (Math.random() - 0.5) > 0 ? true : false],
-      [`th`, (Math.random() - 0.5) > 0 ? true : false],
-      [`fr`, (Math.random() - 0.5) > 0 ? true : false],
-      [`sa`, (Math.random() - 0.5) > 0 ? true : false],
-      [`su`, (Math.random() - 0.5) > 0 ? true : false],
+      [`we`, (Math.random() - 0.9) > 0 ? true : false],
+      [`th`, (Math.random() - 0.9) > 0 ? true : false],
+      [`fr`, (Math.random() - 0.9) > 0 ? true : false],
+      [`sa`, (Math.random() - 0.9) > 0 ? true : false],
+      [`su`, (Math.random() - 0.9) > 0 ? true : false],
     ]);
     card.hashtags = [`#cinema`, `#Minsk`, `#repeat`];
     card.color = colorCard[Math.round(Math.random() * 5)];

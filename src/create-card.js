@@ -4,7 +4,7 @@ function createCard(config) {
     const result = `
         <article class="card 
         ${configCard.edit ? `card--edit` : ``}
-        ${configCard.repeat ? `card--repeat` : ``}
+        ${checkingMapOnTrueValue(configCard.repeatingDays) ? `card--repeat` : ``}
         ${configCard.deadline ? `card--deadline` : ``}
         card--${configCard.color}
             ">
@@ -47,7 +47,7 @@ function createCard(config) {
                   <div class="card__details">
                     <div class="card__dates">
                       ${createFieldDeadline(configCard.deadline, configCard.deadlinePoint)}
-                      ${createFieldRepeatDays(configCard.repeat, configCard.repeatingDays)}
+                      ${createFieldRepeatDays(configCard.repeatingDays)}
                     </div>
 
                     <div class="card__hashtag">
@@ -134,11 +134,11 @@ function createCard(config) {
     return feildDeadline;
   }
 
-  function createFieldRepeatDays(repeat, repeatingDays) {
+  function createFieldRepeatDays(repeatingDays) {
     const feildRepeatDays = `
       <button class="card__repeat-toggle" type="button">
         repeat:<span class="card__repeat-status">
-          ${checkingRepeating() ? `
+          ${checkingMapOnTrueValue(repeatingDays) ? `
           YES</span>
       </button>
       <fieldset class="card__repeat-days">
@@ -149,15 +149,6 @@ function createCard(config) {
           NO</span>
       </button>`}
     `;
-
-    function checkingRepeating() {
-      for (const check of repeatingDays.values()) {
-        if (check) {
-          return true;
-        }
-      }
-      return false;
-    }
 
     function createRepeatDays() {
       const result = [];
@@ -240,6 +231,16 @@ function createCard(config) {
     }
 
     return hashtags.map(createCardHashtag).join(``);
+  }
+
+  function checkingMapOnTrueValue(chekingMap) {
+    for (const value of chekingMap.values()) {
+      if (value) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   return createNewCard(config);
