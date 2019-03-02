@@ -13,11 +13,11 @@ const generateConfigCards = (count = 0) => {
 
     card.edit = (Math.random() - 0.8) > 0 ? true : false;
 
-    card.deadline = (Math.random() - 0.8) > 0 ? true : false;
-    card.deadlinePoint = {
-      date: `21 April 2019`,
-      time: `08:30 PM`
-    };
+    card.dueDate = (Math.random() - 0.7) > 0 ?
+      Date.now()
+        + Math.floor(Math.random() * 24 * 60) * 60 * 1000
+        + Math.floor(Math.random() * 14) * 24 * 60 * 60 * 1000
+      : undefined;
 
     card.repeatingDays = new Map([
       [`mo`, false],

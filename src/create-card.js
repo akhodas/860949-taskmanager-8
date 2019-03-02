@@ -102,15 +102,16 @@ const createCard = (config) => {
     `;
   };
 
-  const createFieldDeadline = (deadline, deadlinePoint) => {
-    return `
+  const createFieldDeadline = (dueDate) => {
+    const date = new Date(dueDate);
+    const fieldDate = `
             <button class="card__date-deadline-toggle" type="button">
                 date: <span class="card__date-status">
-                ${deadline ? `YES` : `NO`}
+                ${dueDate ? `YES` : `NO`}
                 </span>
             </button>
 
-            ${deadline ? `
+            ${dueDate ? `
                         <fieldset class="card__date-deadline">
                             <label class="card__input-deadline-wrap">
                             <input
@@ -118,7 +119,7 @@ const createCard = (config) => {
                                 type="text"
                                 placeholder="23 September"
                                 name="date"
-                                value="${deadlinePoint.date}"
+                                value="${date.toDateString()}"
                             />
                             </label>
                             <label class="card__input-deadline-wrap">
@@ -127,11 +128,12 @@ const createCard = (config) => {
                                 type="text"
                                 placeholder="11:15 PM"
                                 name="time"
-                                value="${deadlinePoint.time}"
+                                value="${date.toTimeString().slice(0, 5)}"
                             />
                             </label>
                         </fieldset>
                     ` : ``}`;
+    return fieldDate;
   };
 
   return ((configCard) => {
@@ -139,7 +141,7 @@ const createCard = (config) => {
         <article class="card 
         ${configCard.edit ? `card--edit` : ``}
         ${checkingMapOnTrueValue(configCard.repeatingDays) ? `card--repeat` : ``}
-        ${configCard.deadline ? `card--deadline` : ``}
+        ${(+configCard.dueDate - Date.now() < 7 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
         card--${configCard.color}
             ">
             <form class="card__form" method="get">
@@ -179,7 +181,7 @@ const createCard = (config) => {
                 <div class="card__settings">
                   <div class="card__details">
                     <div class="card__dates">
-                      ${createFieldDeadline(configCard.deadline, configCard.deadlinePoint)}
+                      ${createFieldDeadline(configCard.dueDate)}
                       ${createFieldRepeatDays(configCard.repeatingDays)}
                     </div>
 
