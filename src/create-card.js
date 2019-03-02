@@ -30,7 +30,11 @@ const createCard = (config) => {
       `;
     };
 
-    return hashtags.map(createCardHashtag).join(``);
+    const tagsList = [];
+    for (const tag of hashtags) {
+      tagsList.push(createCardHashtag(tag));
+    }
+    return tagsList.join(``);
   };
 
   const createListCardColorWrap = (configColor) => {
@@ -181,7 +185,7 @@ const createCard = (config) => {
 
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        ${createListCardHashtag(configCard.hashtags)}
+                        ${createListCardHashtag(configCard.tags)}
                       </div>
 
                       <label>

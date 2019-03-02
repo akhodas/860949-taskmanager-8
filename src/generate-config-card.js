@@ -1,5 +1,6 @@
 const generateConfigCards = (count = 0) => {
   const cards = [];
+  const hashtags = [`homework`, `theory`, `practice`, `intensive`, `keks`, `Minsk`, `cinema`];
 
   for (let i = 0; i < count; i++) {
     const card = {};
@@ -28,11 +29,22 @@ const generateConfigCards = (count = 0) => {
       [`su`, (Math.random() - 0.9) > 0 ? true : false],
     ]);
 
-    card.hashtags = [`cinema`, `Minsk`, `repeat`];
+    card.tags = new Set();
+    let countTag = 0;
+    hashtags.forEach((item) => {
+      if ((Math.random() - 0.7) > 0 && countTag < 3) {
+        card.tags.add(item);
+        countTag++;
+      }
+    });
 
-    card.color = [`black`, `yellow`, `green`, `blue`, `pink`][Math.round(Math.random() * 5)];
+    card.color = `black, yellow, blue, green, pink`.split(`, `)[Math.round(Math.random() * 5)];
 
     card.picture = `http://picsum.photos/100/100?r=${Math.random()}`;
+
+    card.isFavorite = (Math.random() - 0.7) > 0 ? true : false;
+
+    card.isDone = (Math.random() - 0.7) > 0 ? true : false;
 
     cards.push(card);
   }
