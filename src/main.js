@@ -1,8 +1,8 @@
 import createFilter from "./create-filter";
-import createCard from './create-card';
 import drawField from './draw-field';
+import Card from './Card';
 
-import generateConfigCards from './generate-config-card';
+import ConfigCard from './ConfigCard';
 
 const configurationFilters = [
   {
@@ -36,6 +36,14 @@ const configurationFilters = [
   }
 ];
 
+const generateListConfigCards = (count) => {
+  const listConfigCards = [];
+  for (let i = 0; i < count; i++) {
+    listConfigCards.push(new ConfigCard());
+  }
+  return listConfigCards;
+};
+
 const drawFilters = (configFilters) => {
   const createFiltersList = (config = []) => config.map(createFilter).join(``);
 
@@ -43,18 +51,18 @@ const drawFilters = (configFilters) => {
 };
 
 const drawCards = (configCards) => {
-  const createCardsList = (config = []) => config.map(createCard).join(``);
+  const createCardsList = (config = []) => config.map((current) => new Card(current).prepareForDrow()).join(``);
 
   drawField(`board__tasks`, createCardsList(configCards));
 };
 
 drawFilters(configurationFilters);
-drawCards(generateConfigCards(7));
+drawCards(generateListConfigCards(7));
 
 const elementsFilter = document.getElementsByClassName(`filter__label`);
 
 for (let i = 0; i < elementsFilter.length; i++) {
   elementsFilter[i].addEventListener(`click`, () => {
-    drawCards(generateConfigCards(Math.round(Math.random() * 7)));
+    drawCards(generateListConfigCards(Math.round(Math.random() * 7)));
   });
 }
