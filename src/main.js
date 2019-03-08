@@ -1,8 +1,9 @@
 import createFilter from "./create-filter";
 import drawField from './draw-field';
-import Card from './Card';
+import Task from './task';
+import TaskEdit from './task-edit';
 
-import ConfigCard from './ConfigCard';
+import ConfigTask from './config-task';
 
 const configurationFilters = [
   {
@@ -36,12 +37,12 @@ const configurationFilters = [
   }
 ];
 
-const generateListConfigCards = (count) => {
-  const listConfigCards = [];
+const generateListConfigTasks = (count) => {
+  const listConfigTasks = [];
   for (let i = 0; i < count; i++) {
-    listConfigCards.push(new ConfigCard());
+    listConfigTasks.push(new ConfigTask());
   }
-  return listConfigCards;
+  return listConfigTasks;
 };
 
 const drawFilters = (configFilters) => {
@@ -50,19 +51,37 @@ const drawFilters = (configFilters) => {
   drawField(`main__filter`, createFiltersList(configFilters));
 };
 
-const drawCards = (configCards) => {
-  const createCardsList = (config = []) => config.map((current) => new Card(current).prepareForDrow()).join(``);
+const drawTasks = (configTask) => {
+  const taskContainer = document.getElementsByClassName(`board__tasks`)[0];
 
-  drawField(`board__tasks`, createCardsList(configCards));
+  if (taskContainer) {
+    configTask.forEach((element) => {
+      const taskComponent = new Task(element);
+      const editTaskComponent = new TaskEdit(element);
+
+      taskContainer.appendChild(taskComponent.render());
+
+      taskComponent.onEdit = () => {
+        editTaskComponent.render();
+        taskContainer.replaceChild(editTaskComponent.element, taskComponent.element);
+        taskComponent.unrender();
+      };
+      editTaskComponent.onSubmit = () => {
+        taskComponent.render();
+        taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
+        editTaskComponent.unrender();
+      };
+    });
+  }
 };
 
 drawFilters(configurationFilters);
-drawCards(generateListConfigCards(7));
+drawTasks(generateListConfigTasks(7));
 
 const elementsFilter = document.getElementsByClassName(`filter__label`);
 
 for (let i = 0; i < elementsFilter.length; i++) {
   elementsFilter[i].addEventListener(`click`, () => {
-    drawCards(generateListConfigCards(Math.round(Math.random() * 7)));
+    drawTasks(generateListConfigTasks(Math.round(Math.random() * 7)));
   });
 }

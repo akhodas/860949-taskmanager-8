@@ -8,8 +8,6 @@ export default class ConfigCard {
       `Пройти интенсив на соточку`
     ][Math.floor(Math.random() * 3)];
 
-    this.edit = (Math.random() - 0.8) > 0 ? true : false;
-
     this.dueDate = (Math.random() - 0.7) > 0 ?
       Date.now()
         + Math.floor(Math.random() * 24 * 60) * 60 * 1000
@@ -28,13 +26,14 @@ export default class ConfigCard {
 
     this.tags = new Set(this._createTags());
 
-    this.color = `black, yellow, blue, green, pink`.split(`, `)[Math.round(Math.random() * 5)];
+    this.color = `black, yellow, blue, green, pink`.split(`, `)[Math.floor(Math.random() * 5)];
 
     this.picture = `http://picsum.photos/100/100?r=${Math.random()}`;
 
     this.isFavorite = (Math.random() - 0.7) > 0 ? true : false;
 
     this.isDone = (Math.random() - 0.7) > 0 ? true : false;
+
   }
 
   _createTags() {
@@ -48,5 +47,6 @@ export default class ConfigCard {
     });
     return listTags;
   }
+
 
 }
