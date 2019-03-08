@@ -1,3 +1,5 @@
+import createElement from './create-element';
+
 export default class Task {
   constructor(options) {
     this._title = options.title;
@@ -282,10 +284,3 @@ export default class Task {
   }
 
 }
-
-const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-  return newElement;
-};
-
