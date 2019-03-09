@@ -51,13 +51,18 @@ const drawFilters = (configFilters) => {
   drawField(`main__filter`, createFiltersList(configFilters));
 };
 
+let taskComponentsList = [];
+let editTaskComponentsList = [];
+
 const drawTasks = (configTask) => {
   const taskContainer = document.getElementsByClassName(`board__tasks`)[0];
 
   if (taskContainer) {
     configTask.forEach((element) => {
       const taskComponent = new Task(element);
+      taskComponentsList.push(taskComponent);
       const editTaskComponent = new TaskEdit(element);
+      editTaskComponentsList.push(editTaskComponent);
 
       taskContainer.appendChild(taskComponent.render());
 
@@ -75,6 +80,23 @@ const drawTasks = (configTask) => {
   }
 };
 
+const undrawOldTask = () => {
+  checkListOnRender(taskComponentsList);
+  taskComponentsList = [];
+  checkListOnRender(editTaskComponentsList);
+  editTaskComponentsList = [];
+};
+
+const checkListOnRender = (arr = []) => {
+  const taskContainer = document.getElementsByClassName(`board__tasks`)[0];
+  arr.forEach((task) => {
+    if (task.element) {
+      taskContainer.removeChild(task.element);
+      task.unrender();
+    }
+  });
+};
+
 drawFilters(configurationFilters);
 drawTasks(generateListConfigTasks(7));
 
@@ -82,6 +104,7 @@ const elementsFilter = document.getElementsByClassName(`filter__label`);
 
 for (let i = 0; i < elementsFilter.length; i++) {
   elementsFilter[i].addEventListener(`click`, () => {
+    undrawOldTask();
     drawTasks(generateListConfigTasks(Math.round(Math.random() * 7)));
   });
 }
