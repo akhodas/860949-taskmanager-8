@@ -1,24 +1,27 @@
-export default class Card {
+import createElement from './create-element';
+
+export default class Task {
   constructor(options) {
-    this.options = options;
-    this.title = options.title;
-    this.tags = options.tags;
-    this.picture = options.picture;
-    this.dueDate = options.dueDate;
-    this.repeatingDays = options.repeatingDays;
-    this.color = options.color;
-    this.edit = options.edit;
-    this.isFavorite = options.isFavorite;
-    this.isDone = options.isDone;
+    this._title = options.title;
+    this._tags = options.tags;
+    this._picture = options.picture;
+    this._dueDate = options.dueDate;
+    this._repeatingDays = options.repeatingDays;
+    this._color = options.color;
+    this._isFavorite = options.isFavorite;
+    this._isDone = options.isDone;
+    this._state = {};
+    this._onEdit = null;
+    this._onEditButtonClick = this._onEditButtonClick.bind(this);
+    this._element = null;
   }
 
-  prepareForDrow() {
+  get template() {
     return `
-    <article class="card 
-    ${this.edit ? `card--edit` : ``}
-    ${this._checkingMapOnTrueValue(this.repeatingDays) ? `card--repeat` : ``}
-    ${(+this.dueDate - Date.now() < 7 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
-    card--${this.color}
+    <article class="card     
+    ${this._checkingMapOnTrueValue(this._repeatingDays) ? `card--repeat` : ``}
+    ${(+this._dueDate - Date.now() < 7 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
+    card--${this._color}
         ">
         <form class="card__form" method="get">
           <div class="card__inner">
@@ -49,7 +52,7 @@ export default class Card {
                   class="card__text"
                   placeholder="Start typing your text here..."
                   name="text"
-                >${this.title}
+                >${this._title}
                 </textarea>
               </label>
             </div>
@@ -57,13 +60,13 @@ export default class Card {
             <div class="card__settings">
               <div class="card__details">
                 <div class="card__dates">
-                  ${this._createFieldDeadline(this.dueDate)}
-                  ${this._createFieldRepeatDays(this.repeatingDays)}
+                  ${this._createFieldDeadline(this._dueDate)}
+                  ${this._createFieldRepeatDays(this._repeatingDays)}
                 </div>
 
                 <div class="card__hashtag">
                   <div class="card__hashtag-list">
-                    ${this._createListCardHashtag(this.tags)}
+                    ${this._createListCardHashtag(this._tags)}
                   </div>
 
                   <label>
@@ -84,7 +87,7 @@ export default class Card {
                   name="img"
                 />
                 <img
-                  src="${this.picture}"
+                  src="${this._picture}"
                   alt="task picture"
                   class="card__img"
                 />
@@ -93,7 +96,7 @@ export default class Card {
               <div class="card__colors-inner">
                 <h3 class="card__colors-title">Color</h3>
                 <div class="card__colors-wrap">
-                  ${this._createListCardColorWrap(this.color)}
+                  ${this._createListCardColorWrap(this._color)}
                 </div>
               </div>
             </div>
@@ -106,6 +109,14 @@ export default class Card {
         </form>
       </article>
     `;
+  }
+
+  get element() {
+    return this._element;
+  }
+
+  set onEdit(fn) {
+    this._onEdit = fn;
   }
 
   _checkingMapOnTrueValue(chekingMap) {
@@ -139,7 +150,7 @@ export default class Card {
     };
 
     const tagsList = [];
-    for (const tag of this.tags) {
+    for (const tag of this._tags) {
       tagsList.push(createCardHashtag(tag));
     }
     return tagsList.join(``);
@@ -155,7 +166,7 @@ export default class Card {
           class="card__color-input card__color-input--${color} visually-hidden"
           name="color"
           value="${color}"
-          ${(this.configColor === color) ? `checked` : ``}
+          ${(this._color === color) ? `checked` : ``}
         />
         <label
           for="color-${color}-6"
@@ -165,7 +176,7 @@ export default class Card {
       `;
     };
 
-    return cardColor.map((current) => createCardColorWrap(current, this.configColor)).join(``);
+    return cardColor.map((current) => createCardColorWrap(current)).join(``);
   }
 
   _createFieldRepeatDays() {
@@ -197,12 +208,12 @@ export default class Card {
     return `
       <button class="card__repeat-toggle" type="button">
         repeat:<span class="card__repeat-status">
-          ${this._checkingMapOnTrueValue(this.repeatingDays) ? `
+          ${this._checkingMapOnTrueValue(this._repeatingDays) ? `
           YES</span>
       </button>
       <fieldset class="card__repeat-days">
         <div class="card__repeat-days-inner">
-          ${createRepeatDays(this.repeatingDays)}                          
+          ${createRepeatDays(this._repeatingDays)}                          
         </div>
       </fieldset>` : `
           NO</span>
@@ -211,15 +222,15 @@ export default class Card {
   }
 
   _createFieldDeadline() {
-    const date = new Date(this.dueDate);
+    const date = new Date(this._dueDate);
     const fieldDate = `
             <button class="card__date-deadline-toggle" type="button">
                 date: <span class="card__date-status">
-                ${this.dueDate ? `YES` : `NO`}
+                ${this._dueDate ? `YES` : `NO`}
                 </span>
             </button>
 
-            ${this.dueDate ? `
+            ${this._dueDate ? `
                         <fieldset class="card__date-deadline">
                             <label class="card__input-deadline-wrap">
                             <input
@@ -242,6 +253,33 @@ export default class Card {
                         </fieldset>
                     ` : ``}`;
     return fieldDate;
+  }
+
+  _onEditButtonClick() {
+    if (typeof this._onEdit === `function`) {
+      this._onEdit();
+    }
+  }
+
+  bind() {
+    this._element.querySelector(`.card__btn--edit`)
+        .addEventListener(`click`, this._onEditButtonClick);
+  }
+
+  render() {
+    this._element = createElement(this.template);
+    this.bind();
+    return this._element;
+  }
+
+  unbind() {
+    this._element.querySelector(`.card__btn--edit`)
+        .removeEventListener(`click`, this._onEditButtonClick);
+  }
+
+  unrender() {
+    this.unbind();
+    this._element = null;
   }
 
 }
