@@ -1,7 +1,8 @@
-import createElement from './create-element';
+import Component from './component';
 
-export default class Task {
+export default class Task extends Component {
   constructor(options) {
+    super();
     this._title = options.title;
     this._tags = options.tags;
     this._picture = options.picture;
@@ -13,7 +14,6 @@ export default class Task {
     this._state = {};
     this._onSubmit = null;
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
-    this._element = null;
   }
 
   get template() {
@@ -109,10 +109,6 @@ export default class Task {
           </form>
         </article>
       `;
-  }
-
-  get element() {
-    return this._element;
   }
 
   set onSubmit(fn) {
@@ -262,25 +258,14 @@ export default class Task {
     }
   }
 
-  bind() {
+  createListeners() {
     this._element.querySelector(`.card__form`)
           .addEventListener(`submit`, this._onSubmitButtonClick);
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unbind() {
+  removeListeners() {
     this._element.querySelector(`.card__form`)
     .removeEventListener(`submit`, this._onSubmitButtonClick);
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
   }
 
 }
