@@ -71,7 +71,12 @@ const drawTasks = (configTask) => {
         taskContainer.replaceChild(editTaskComponent.element, taskComponent.element);
         taskComponent.unrender();
       };
-      editTaskComponent.onSubmit = () => {
+      editTaskComponent.onSave = () => {
+        taskComponent.render();
+        taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
+        editTaskComponent.unrender();
+      };
+      editTaskComponent.onDelete = () => {
         taskComponent.render();
         taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
         editTaskComponent.unrender();

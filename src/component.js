@@ -33,4 +33,6 @@ export default class Component {
 
   removeListeners() {}
 
+  update() {}
+
 }

@@ -1,8 +1,10 @@
 import Component from './component';
+import Color from './constants/color-card';
 
 export default class Task extends Component {
   constructor(options) {
     super();
+    this._id = options.id;
     this._title = options.title;
     this._tags = options.tags;
     this._picture = options.picture;
@@ -12,8 +14,10 @@ export default class Task extends Component {
     this._isFavorite = options.isFavorite;
     this._isDone = options.isDone;
     this._state = {};
-    this._onSubmit = null;
-    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
+    this._onSave = null;
+    this._onSaveButtonClick = this._onSaveButtonClick.bind(this);
+    this._onDelete = null;
+    this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
   }
 
   get template() {
@@ -111,8 +115,12 @@ export default class Task extends Component {
       `;
   }
 
-  set onSubmit(fn) {
-    this._onSubmit = fn;
+  set onSave(fn) {
+    this._onSave = fn;
+  }
+
+  set onDelete(fn) {
+    this._onDelete = fn;
   }
 
   _checkingMapOnTrueValue(chekingMap) {
@@ -153,26 +161,27 @@ export default class Task extends Component {
   }
 
   _createListCardColorWrap() {
-    const cardColor = [`black`, `yellow`, `green`, `blue`, `pink`];
-    const createCardColorWrap = (color) => {
-      return `
-          <input
-            type="radio"
-            id="color-${color}-6"
-            class="card__color-input card__color-input--${color} visually-hidden"
-            name="color"
-            value="${color}"
-            ${(this._color === color) ? `checked` : ``}
-          />
-          <label
-            for="color-${color}-6"
-            class="card__color card__color--${color}"
-            >${color}</label
-          >
-        `;
-    };
+    const cardColor = [];
+    for (const key in Color) {
+      if (Color.hasOwnProperty(key)) {
+        cardColor.push(`
+        <input
+          type="radio"
+          id="color-${Color[key]}-${this._id}"
+          class="card__color-input card__color-input--${Color[key]} visually-hidden"
+          name="color"
+          value="${Color[key]}"
+          ${(this._color === Color[key]) ? `checked` : ``}
+        />
+        <label
+          for="color-${Color[key]}-${this._id}"
+          class="card__color card__color--${Color[key]}"
+          >${Color[key]}</label
+        >`);
+      }
+    }
 
-    return cardColor.map((current) => createCardColorWrap(current)).join(``);
+    return cardColor.join(``);
   }
 
   _createFieldRepeatDays() {
@@ -181,12 +190,12 @@ export default class Task extends Component {
                       <input
                         class="visually-hidden card__repeat-day-input"
                         type="checkbox"
-                        id="repeat-${day[0]}-6"
+                        id="repeat-${day[0]}-${this._id}"
                         name="repeat"
                         value="${day[0]}"
                         ${day[1] ? `checked` : ``}
                       />
-                      <label class="card__repeat-day" for="repeat-${day[0]}-6">${day[0]}
+                      <label class="card__repeat-day" for="repeat-${day[0]}-${this._id}">${day[0]}
                       </label>
                   `;
     };
@@ -251,21 +260,41 @@ export default class Task extends Component {
     return fieldDate;
   }
 
-  _onSubmitButtonClick(evt) {
+  _onSaveButtonClick(evt) {
     evt.preventDefault();
-    if (typeof this._onSubmit === `function`) {
-      this._onSubmit();
+    if (typeof this._onSave === `function`) {
+      this._onSave();
+    }
+  }
+
+  _onDeleteButtonClick(evt) {
+    evt.preventDefault();
+    if (typeof this._onDelete === `function`) {
+      this._onDelete();
     }
   }
 
   createListeners() {
-    this._element.querySelector(`.card__form`)
-          .addEventListener(`submit`, this._onSubmitButtonClick);
+    this._element.querySelector(`.card__save`)
+      .addEventListener(`click`, this._onSaveButtonClick);
+    this._element.querySelector(`.card__delete`)
+      .addEventListener(`click`, this._onDeleteButtonClick);
   }
 
   removeListeners() {
-    this._element.querySelector(`.card__form`)
-    .removeEventListener(`submit`, this._onSubmitButtonClick);
+    this._element.querySelector(`.card__save`)
+      .removeEventListener(`submit`, this._onSaveButtonClick);
+    this._element.querySelector(`.card__delete`)
+      .removeEventListener(`click`, this._onDeleteButtonClick);
+  }
+
+  update(data) {
+    this._title = data.title;
+    this._tags = data.tags;
+    this._picture = data.picture;
+    this._dueDate = data.dueDate;
+    this._repeatingDays = data.repeatingDays;
+    this._color = data.color;
   }
 
 }

@@ -1,8 +1,10 @@
 import Component from './component';
+import Color from './constants/color-card';
 
 export default class Task extends Component {
   constructor(options) {
     super();
+    this._id = options.id;
     this._title = options.title;
     this._tags = options.tags;
     this._picture = options.picture;
@@ -153,26 +155,27 @@ export default class Task extends Component {
   }
 
   _createListCardColorWrap() {
-    const cardColor = [`black`, `yellow`, `green`, `blue`, `pink`];
-    const createCardColorWrap = (color) => {
-      return `
+    const cardColor = [];
+    for (const key in Color) {
+      if (Color.hasOwnProperty(key)) {
+        cardColor.push(`
         <input
           type="radio"
-          id="color-${color}-6"
-          class="card__color-input card__color-input--${color} visually-hidden"
+          id="color-${Color[key]}-${this._id}"
+          class="card__color-input card__color-input--${Color[key]} visually-hidden"
           name="color"
-          value="${color}"
-          ${(this._color === color) ? `checked` : ``}
+          value="${Color[key]}"
+          ${(this._color === Color[key]) ? `checked` : ``}
         />
         <label
-          for="color-${color}-6"
-          class="card__color card__color--${color}"
-          >${color}</label
-        >
-      `;
-    };
+          for="color-${Color[key]}-${this._id}"
+          class="card__color card__color--${Color[key]}"
+          >${Color[key]}</label
+        >`);
+      }
+    }
 
-    return cardColor.map((current) => createCardColorWrap(current)).join(``);
+    return cardColor.join(``);
   }
 
   _createFieldRepeatDays() {
@@ -181,12 +184,12 @@ export default class Task extends Component {
                     <input
                       class="visually-hidden card__repeat-day-input"
                       type="checkbox"
-                      id="repeat-${day[0]}-6"
+                      id="repeat-${day[0]}-${this._id}"
                       name="repeat"
                       value="${day[0]}"
                       ${day[1] ? `checked` : ``}
                     />
-                    <label class="card__repeat-day" for="repeat-${day[0]}-6">${day[0]}
+                    <label class="card__repeat-day" for="repeat-${day[0]}-${this._id}">${day[0]}
                     </label>
                 `;
     };
@@ -259,12 +262,21 @@ export default class Task extends Component {
 
   createListeners() {
     this._element.querySelector(`.card__btn--edit`)
-        .addEventListener(`click`, this._onEditButtonClick);
+      .addEventListener(`click`, this._onEditButtonClick);
   }
 
   removeListeners() {
     this._element.querySelector(`.card__btn--edit`)
-        .removeEventListener(`click`, this._onEditButtonClick);
+      .removeEventListener(`click`, this._onEditButtonClick);
+  }
+
+  update(data) {
+    this._title = data.title;
+    this._tags = data.tags;
+    this._picture = data.picture;
+    this._dueDate = data.dueDate;
+    this._repeatingDays = data.repeatingDays;
+    this._color = data.color;
   }
 
 }
