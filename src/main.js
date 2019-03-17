@@ -71,7 +71,20 @@ const drawTasks = (configTask) => {
         taskContainer.replaceChild(editTaskComponent.element, taskComponent.element);
         taskComponent.unrender();
       };
-      editTaskComponent.onSave = () => {
+      // editTaskComponent.onSave = () => {
+      //   taskComponent.render();
+      //   taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
+      //   editTaskComponent.unrender();
+      // };
+      editTaskComponent.onSave = (newObject) => {
+        element.title = newObject.title;
+        element.tags = newObject.tags;
+        element.color = newObject.color;
+        element.repeatingDays = newObject.repeatingDays;
+        element.dueDate = newObject.dueDate;
+        element.isDate = newObject.isDate;
+
+        taskComponent.update(element);
         taskComponent.render();
         taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
         editTaskComponent.unrender();
