@@ -225,34 +225,34 @@ export default class Task extends AbstractComponentRender {
   _createFieldDeadline() {
     const date = new Date(this._dueDate);
     const fieldDate = `
-            <button class="card__date-deadline-toggle" type="button">
-                date: <span class="card__date-status">
-                ${this._state.isDate ? `YES` : `NO`}
-                </span>
-            </button>
+      <button class="card__date-deadline-toggle" type="button">
+        date: <span class="card__date-status">
+        ${this._state.isDate ? `YES` : `NO`}
+        </span>
+      </button>
 
-            ${this._state.isDate ? `
-                        <fieldset class="card__date-deadline">
-                            <label class="card__input-deadline-wrap">
-                            <input
-                                class="card__date"
-                                type="text"
-                                placeholder="23 September"
-                                name="date"
-                                value="${date.toDateString()}"
-                            />
-                            </label>
-                            <label class="card__input-deadline-wrap">
-                            <input
-                                class="card__time"
-                                type="text"
-                                placeholder="11:15 PM"
-                                name="time"
-                                value="${date.toTimeString().slice(0, 5)}"
-                            />
-                            </label>
-                        </fieldset>
-                    ` : ``}`;
+      ${this._state.isDate ? `
+        <fieldset class="card__date-deadline">
+          <label class="card__input-deadline-wrap">
+          <input
+            class="card__date"
+            type="text"
+            placeholder="23 September"
+            name="date"
+            value="${date.toDateString()}"
+          />
+          </label>
+          <label class="card__input-deadline-wrap">
+          <input
+            class="card__time"
+            type="text"
+            placeholder="11:15 PM"
+            name="time"
+            value="${date.toTimeString().slice(0, 5)}"
+          />
+          </label>
+        </fieldset>
+      ` : ``}`;
     return fieldDate;
   }
 
@@ -276,7 +276,7 @@ export default class Task extends AbstractComponentRender {
     this._title = data.title;
     this._tags = data.tags;
     this._dueDate = data.dueDate;
-    this._state.isDate = data.isDate;
+    this._state.isDate = data.isD
     this._repeatingDays = data.repeatingDays;
     this._state.isRepeated = this._checkingMapOnTrueValue(this._repeatingDays);
     this._color = data.color;

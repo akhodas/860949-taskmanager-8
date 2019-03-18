@@ -71,11 +71,7 @@ const drawTasks = (configTask) => {
         taskContainer.replaceChild(editTaskComponent.element, taskComponent.element);
         taskComponent.unrender();
       };
-      // editTaskComponent.onSave = () => {
-      //   taskComponent.render();
-      //   taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
-      //   editTaskComponent.unrender();
-      // };
+
       editTaskComponent.onSave = (newObject) => {
         element.title = newObject.title;
         element.tags = newObject.tags;

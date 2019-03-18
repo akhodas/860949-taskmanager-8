@@ -1,5 +1,6 @@
 import AbstractComponentRender from './abstract-component-render';
 import Color from './constants/color-card';
+import flatpickr from 'flatpickr';
 
 export default class TaskEdit extends AbstractComponentRender {
   constructor(options) {
@@ -233,34 +234,35 @@ export default class TaskEdit extends AbstractComponentRender {
   _createFieldDeadline() {
     const date = new Date(this._dueDate);
     const fieldDate = `
-              <button class="card__date-deadline-toggle" type="button">
-                  date: <span class="card__date-status">
-                  ${this._state.isDate ? `YES` : `NO`}
-                  </span>
-              </button>
+      <button class="card__date-deadline-toggle" type="button">
+        date: <span class="card__date-status">
+          ${this._state.isDate ? `YES` : `NO`}
+        </span>
+      </button>
   
-              ${this._state.isDate ? `
-                          <fieldset class="card__date-deadline">
-                              <label class="card__input-deadline-wrap">
-                              <input
-                                  class="card__date"
-                                  type="text"
-                                  placeholder="23 September"
-                                  name="date"
-                                  value="${date.toDateString()}"
-                              />
-                              </label>
-                              <label class="card__input-deadline-wrap">
-                              <input
-                                  class="card__time"
-                                  type="text"
-                                  placeholder="11:15 PM"
-                                  name="time"
-                                  value="${date.toTimeString().slice(0, 5)}"
-                              />
-                              </label>
-                          </fieldset>
-                      ` : ``}`;
+      ${this._state.isDate ? `
+        <fieldset class="card__date-deadline">
+          <label class="card__input-deadline-wrap">
+          <input
+            class="card__date-${this._id}"
+            type="text"
+            placeholder="23 September"
+            name="date"
+            value=
+            "${this._dueDate ? date.toDateString().slice(4) : new Date().toDateString().slice(4)}"
+          />
+          </label>
+          <label class="card__input-deadline-wrap">
+          <input
+            class="card__time-${this._id}"
+            type="text"
+            placeholder="11:15 PM"
+            name="time"
+            value="${this._dueDate ? date.toTimeString().slice(0, 5) : new Date().toTimeString().slice(0, 5)}"
+          />
+          </label>
+        </fieldset>
+      ` : ``}`;
     return fieldDate;
   }
 
@@ -292,6 +294,21 @@ export default class TaskEdit extends AbstractComponentRender {
         .addEventListener(`click`, this._onChangeDate);
     this._element.querySelector(`.card__repeat-toggle`)
         .addEventListener(`click`, this._onChangeRepeated);
+
+    if (this._state.isDate) {
+      flatpickr(`.card__date-${this._id}`,
+          {altInput: true,
+            altFormat: `M j Y`,
+            dateFormat: `M j Y`
+          });
+      flatpickr(`.card__time-${this._id}`,
+          {enableTime: true,
+            noCalendar: true,
+            altInput: true,
+            altFormat: `H:i`,
+            dateFormat: `H:i`,
+          });
+    }
   }
 
   removeListeners() {
@@ -376,10 +393,12 @@ export default class TaskEdit extends AbstractComponentRender {
         target.repeatingDays.set(value, true);
       },
       date: (value) => {
+        console.log(value);
         target.dueDate = new Date(value);
         target.isDate = true;
       },
       time: (value) => {
+        console.log(value);
         target.dueDate = new Date(target.dueDate.getTime() +
           (value.slice(0, 2) * 60 + +value.slice(3)) * 60 * 1000);
       },
