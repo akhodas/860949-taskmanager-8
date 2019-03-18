@@ -276,7 +276,7 @@ export default class Task extends AbstractComponentRender {
     this._title = data.title;
     this._tags = data.tags;
     this._dueDate = data.dueDate;
-    this._state.isDate = data.isD
+    this._state.isDate = data.isDate;
     this._repeatingDays = data.repeatingDays;
     this._state.isRepeated = this._checkingMapOnTrueValue(this._repeatingDays);
     this._color = data.color;

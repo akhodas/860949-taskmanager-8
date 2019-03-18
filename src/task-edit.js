@@ -244,7 +244,7 @@ export default class TaskEdit extends AbstractComponentRender {
         <fieldset class="card__date-deadline">
           <label class="card__input-deadline-wrap">
           <input
-            class="card__date-${this._id}"
+            class="card__date card__date-flatpickr-${this._id}"
             type="text"
             placeholder="23 September"
             name="date"
@@ -254,7 +254,7 @@ export default class TaskEdit extends AbstractComponentRender {
           </label>
           <label class="card__input-deadline-wrap">
           <input
-            class="card__time-${this._id}"
+            class="card__time card__time-flatpickr-${this._id}"
             type="text"
             placeholder="11:15 PM"
             name="time"
@@ -296,12 +296,12 @@ export default class TaskEdit extends AbstractComponentRender {
         .addEventListener(`click`, this._onChangeRepeated);
 
     if (this._state.isDate) {
-      flatpickr(`.card__date-${this._id}`,
+      flatpickr(`.card__date-flatpickr-${this._id}`,
           {altInput: true,
             altFormat: `M j Y`,
             dateFormat: `M j Y`
           });
-      flatpickr(`.card__time-${this._id}`,
+      flatpickr(`.card__time-flatpickr-${this._id}`,
           {enableTime: true,
             noCalendar: true,
             altInput: true,
@@ -393,12 +393,10 @@ export default class TaskEdit extends AbstractComponentRender {
         target.repeatingDays.set(value, true);
       },
       date: (value) => {
-        console.log(value);
         target.dueDate = new Date(value);
         target.isDate = true;
       },
       time: (value) => {
-        console.log(value);
         target.dueDate = new Date(target.dueDate.getTime() +
           (value.slice(0, 2) * 60 + +value.slice(3)) * 60 * 1000);
       },

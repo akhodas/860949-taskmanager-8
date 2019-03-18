@@ -48,14 +48,14 @@ const generateListConfigTasks = (count) => {
 const drawFilters = (configFilters) => {
   const createFiltersList = (config = []) => config.map(createFilter).join(``);
 
-  drawField(`main__filter`, createFiltersList(configFilters));
+  drawField(`.main__filter`, createFiltersList(configFilters));
 };
 
 let taskComponentsList = [];
 let editTaskComponentsList = [];
 
 const drawTasks = (configTask) => {
-  const taskContainer = document.getElementsByClassName(`board__tasks`)[0];
+  const taskContainer = document.querySelectorAll(`.board__tasks`)[0];
 
   if (taskContainer) {
     configTask.forEach((element) => {
@@ -102,7 +102,7 @@ const undrawOldTask = () => {
 };
 
 const checkListOnRender = (arr = []) => {
-  const taskContainer = document.getElementsByClassName(`board__tasks`)[0];
+  const taskContainer = document.querySelectorAll(`.board__tasks`)[0];
   arr.forEach((task) => {
     if (task.element) {
       taskContainer.removeChild(task.element);
@@ -114,7 +114,7 @@ const checkListOnRender = (arr = []) => {
 drawFilters(configurationFilters);
 drawTasks(generateListConfigTasks(7));
 
-const elementsFilter = document.getElementsByClassName(`filter__label`);
+const elementsFilter = document.querySelectorAll(`.filter__label`);
 
 for (let i = 0; i < elementsFilter.length; i++) {
   elementsFilter[i].addEventListener(`click`, () => {
