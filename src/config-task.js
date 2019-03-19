@@ -1,6 +1,8 @@
+import Color from './constants/color-card';
+
 export default class ConfigCard {
-  constructor(options) {
-    this.options = options;
+  constructor() {
+    this.id = Math.floor(Math.random() * 10000) + 1;
 
     this.title = [
       `Изучить теорию`,
@@ -26,7 +28,7 @@ export default class ConfigCard {
 
     this.tags = new Set(this._createTags());
 
-    this.color = `black, yellow, blue, green, pink`.split(`, `)[Math.floor(Math.random() * 5)];
+    this.color = Color[Object.keys(Color)[Math.floor(Math.random() * 5)]];
 
     this.picture = `http://picsum.photos/100/100?r=${Math.random()}`;
 

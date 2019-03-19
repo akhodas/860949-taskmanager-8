@@ -1,9 +1,9 @@
 import createElement from './create-element';
 
-export default class Component {
+export default class AbstractComponentRender {
   constructor() {
-    if (new.target === Component) {
-      throw new Error(`Can't instantiate BaseComponent, only concrete one.`);
+    if (new.target === AbstractComponentRender) {
+      throw new Error(`Can't instantiate BaseAbstractComponentRender, only concrete one.`);
     }
 
     this._element = null;
@@ -32,5 +32,7 @@ export default class Component {
   createListeners() {}
 
   removeListeners() {}
+
+  update() {}
 
 }

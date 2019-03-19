@@ -175,7 +175,7 @@ body {
   height: 210px;
   margin-bottom: 26px;
 }
-.card:not(:nth-of-type(4n)) {
+.board__tasks>div:not(:nth-of-type(4n))  {
   margin-right: 40px;
 }
 .card__inner {

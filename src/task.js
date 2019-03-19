@@ -1,8 +1,10 @@
-import Component from './component';
+import AbstractComponentRender from './abstract-component-render';
+import Color from './constants/color-card';
 
-export default class Task extends Component {
+export default class Task extends AbstractComponentRender {
   constructor(options) {
     super();
+    this._id = options.id;
     this._title = options.title;
     this._tags = options.tags;
     this._picture = options.picture;
@@ -12,6 +14,8 @@ export default class Task extends Component {
     this._isFavorite = options.isFavorite;
     this._isDone = options.isDone;
     this._state = {};
+    this._state.isDate = options.dueDate ? true : false;
+    this._state.isRepeated = this._checkingMapOnTrueValue(options.repeatingDays);
     this._onEdit = null;
     this._onEditButtonClick = this._onEditButtonClick.bind(this);
   }
@@ -19,8 +23,8 @@ export default class Task extends Component {
   get template() {
     return `
     <article class="card     
-    ${this._checkingMapOnTrueValue(this._repeatingDays) ? `card--repeat` : ``}
-    ${(+this._dueDate - Date.now() < 7 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
+    ${this._state.isRepeated ? `card--repeat` : ``}
+    ${(this._state.isDate && +this._dueDate - Date.now() < 7 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
     card--${this._color}
         ">
         <form class="card__form" method="get">
@@ -153,26 +157,27 @@ export default class Task extends Component {
   }
 
   _createListCardColorWrap() {
-    const cardColor = [`black`, `yellow`, `green`, `blue`, `pink`];
-    const createCardColorWrap = (color) => {
-      return `
+    const cardColor = [];
+    for (const key in Color) {
+      if (Color.hasOwnProperty(key)) {
+        cardColor.push(`
         <input
           type="radio"
-          id="color-${color}-6"
-          class="card__color-input card__color-input--${color} visually-hidden"
+          id="color-${Color[key]}-${this._id}"
+          class="card__color-input card__color-input--${Color[key]} visually-hidden"
           name="color"
-          value="${color}"
-          ${(this._color === color) ? `checked` : ``}
+          value="${Color[key]}"
+          ${(this._color === Color[key]) ? `checked` : ``}
         />
         <label
-          for="color-${color}-6"
-          class="card__color card__color--${color}"
-          >${color}</label
-        >
-      `;
-    };
+          for="color-${Color[key]}-${this._id}"
+          class="card__color card__color--${Color[key]}"
+          >${Color[key]}</label
+        >`);
+      }
+    }
 
-    return cardColor.map((current) => createCardColorWrap(current)).join(``);
+    return cardColor.join(``);
   }
 
   _createFieldRepeatDays() {
@@ -181,12 +186,12 @@ export default class Task extends Component {
                     <input
                       class="visually-hidden card__repeat-day-input"
                       type="checkbox"
-                      id="repeat-${day[0]}-6"
+                      id="repeat-${day[0]}-${this._id}"
                       name="repeat"
                       value="${day[0]}"
                       ${day[1] ? `checked` : ``}
                     />
-                    <label class="card__repeat-day" for="repeat-${day[0]}-6">${day[0]}
+                    <label class="card__repeat-day" for="repeat-${day[0]}-${this._id}">${day[0]}
                     </label>
                 `;
     };
@@ -220,34 +225,34 @@ export default class Task extends Component {
   _createFieldDeadline() {
     const date = new Date(this._dueDate);
     const fieldDate = `
-            <button class="card__date-deadline-toggle" type="button">
-                date: <span class="card__date-status">
-                ${this._dueDate ? `YES` : `NO`}
-                </span>
-            </button>
+      <button class="card__date-deadline-toggle" type="button">
+        date: <span class="card__date-status">
+        ${this._state.isDate ? `YES` : `NO`}
+        </span>
+      </button>
 
-            ${this._dueDate ? `
-                        <fieldset class="card__date-deadline">
-                            <label class="card__input-deadline-wrap">
-                            <input
-                                class="card__date"
-                                type="text"
-                                placeholder="23 September"
-                                name="date"
-                                value="${date.toDateString()}"
-                            />
-                            </label>
-                            <label class="card__input-deadline-wrap">
-                            <input
-                                class="card__time"
-                                type="text"
-                                placeholder="11:15 PM"
-                                name="time"
-                                value="${date.toTimeString().slice(0, 5)}"
-                            />
-                            </label>
-                        </fieldset>
-                    ` : ``}`;
+      ${this._state.isDate ? `
+        <fieldset class="card__date-deadline">
+          <label class="card__input-deadline-wrap">
+          <input
+            class="card__date"
+            type="text"
+            placeholder="23 September"
+            name="date"
+            value="${date.toDateString()}"
+          />
+          </label>
+          <label class="card__input-deadline-wrap">
+          <input
+            class="card__time"
+            type="text"
+            placeholder="11:15 PM"
+            name="time"
+            value="${date.toTimeString().slice(0, 5)}"
+          />
+          </label>
+        </fieldset>
+      ` : ``}`;
     return fieldDate;
   }
 
@@ -259,12 +264,22 @@ export default class Task extends Component {
 
   createListeners() {
     this._element.querySelector(`.card__btn--edit`)
-        .addEventListener(`click`, this._onEditButtonClick);
+      .addEventListener(`click`, this._onEditButtonClick);
   }
 
   removeListeners() {
     this._element.querySelector(`.card__btn--edit`)
-        .removeEventListener(`click`, this._onEditButtonClick);
+      .removeEventListener(`click`, this._onEditButtonClick);
+  }
+
+  update(data) {
+    this._title = data.title;
+    this._tags = data.tags;
+    this._dueDate = data.dueDate;
+    this._state.isDate = data.isDate;
+    this._repeatingDays = data.repeatingDays;
+    this._state.isRepeated = this._checkingMapOnTrueValue(this._repeatingDays);
+    this._color = data.color;
   }
 
 }
