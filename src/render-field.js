@@ -1,4 +1,4 @@
-const drawField = (className, textHTML) => {
+const renderField = (className, textHTML) => {
 
   const boardTasks = document.querySelectorAll(className)[0];
 
@@ -8,4 +8,4 @@ const drawField = (className, textHTML) => {
 
 };
 
-export default drawField;
+export default renderField;

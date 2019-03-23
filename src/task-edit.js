@@ -295,20 +295,22 @@ export default class TaskEdit extends AbstractComponentRender {
     this._element.querySelector(`.card__repeat-toggle`)
         .addEventListener(`click`, this._onChangeRepeated);
 
-    if (this._state.isDate) {
-      flatpickr(`.card__date-flatpickr-${this._id}`,
-          {altInput: true,
-            altFormat: `M j Y`,
-            dateFormat: `M j Y`
-          });
-      flatpickr(`.card__time-flatpickr-${this._id}`,
-          {enableTime: true,
-            noCalendar: true,
-            altInput: true,
-            altFormat: `H:i`,
-            dateFormat: `H:i`,
-          });
-    }
+    setTimeout(() => {
+      if (this._state.isDate) {
+        flatpickr(`.card__date-flatpickr-${this._id}`,
+            {altInput: true,
+              altFormat: `M j Y`,
+              dateFormat: `M j Y`
+            });
+        flatpickr(`.card__time-flatpickr-${this._id}`,
+            {enableTime: true,
+              noCalendar: true,
+              altInput: true,
+              altFormat: `H:i`,
+              dateFormat: `H:i`,
+            });
+      }
+    }, 0);
   }
 
   removeListeners() {

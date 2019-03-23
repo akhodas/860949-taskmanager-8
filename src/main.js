@@ -1,9 +1,12 @@
 import createFilter from "./create-filter";
-import drawField from './draw-field';
+import renderField from './render-field';
 import Task from './task';
 import TaskEdit from './task-edit';
 
 import ConfigTask from './config-task';
+
+let taskComponentsList = [];
+let editTaskComponentsList = [];
 
 const configurationFilters = [
   {
@@ -45,51 +48,54 @@ const generateListConfigTasks = (count) => {
   return listConfigTasks;
 };
 
-const drawFilters = (configFilters) => {
+const renderFilters = (configFilters) => {
   const createFiltersList = (config = []) => config.map(createFilter).join(``);
 
-  drawField(`.main__filter`, createFiltersList(configFilters));
+  renderField(`.main__filter`, createFiltersList(configFilters));
 };
 
-let taskComponentsList = [];
-let editTaskComponentsList = [];
-
-const drawTasks = (configTask) => {
+const renderTasks = (componentsList, configTask) => {
   const taskContainer = document.querySelectorAll(`.board__tasks`)[0];
 
   if (taskContainer) {
-    configTask.forEach((element) => {
-      const taskComponent = new Task(element);
-      taskComponentsList.push(taskComponent);
-      const editTaskComponent = new TaskEdit(element);
-      editTaskComponentsList.push(editTaskComponent);
+    if (configTask) {
+      configTask.forEach((element) => {
+        const taskComponent = new Task(element);
+        componentsList.push(taskComponent);
+        const editTaskComponent = new TaskEdit(element);
+        editTaskComponentsList.push(editTaskComponent);
 
-      taskContainer.appendChild(taskComponent.render());
+        taskComponent.onEdit = () => {
+          editTaskComponent.render();
+          taskContainer.replaceChild(editTaskComponent.element, taskComponent.element);
+          taskComponent.unrender();
+        };
 
-      taskComponent.onEdit = () => {
-        editTaskComponent.render();
-        taskContainer.replaceChild(editTaskComponent.element, taskComponent.element);
-        taskComponent.unrender();
-      };
+        editTaskComponent.onSave = (newObject) => {
+          const newElement = {};
+          newElement.title = newObject.title;
+          newElement.tags = newObject.tags;
+          newElement.color = newObject.color;
+          newElement.repeatingDays = newObject.repeatingDays;
+          newElement.dueDate = newObject.dueDate;
+          newElement.isDate = newObject.isDate;
 
-      editTaskComponent.onSave = (newObject) => {
-        element.title = newObject.title;
-        element.tags = newObject.tags;
-        element.color = newObject.color;
-        element.repeatingDays = newObject.repeatingDays;
-        element.dueDate = newObject.dueDate;
-        element.isDate = newObject.isDate;
+          taskComponent.update(newElement);
+          taskComponent.render();
+          taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
+          editTaskComponent.unrender();
+        };
+        editTaskComponent.onDelete = () => {
+          taskComponent.delete();
+          taskContainer.removeChild(editTaskComponent.element);
+          editTaskComponent.unrender();
+          editTaskComponent.delete();
+        };
+      });
+    }
 
-        taskComponent.update(element);
-        taskComponent.render();
-        taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
-        editTaskComponent.unrender();
-      };
-      editTaskComponent.onDelete = () => {
-        taskComponent.render();
-        taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
-        editTaskComponent.unrender();
-      };
+    componentsList.forEach((element) => {
+      taskContainer.appendChild(element.render());
     });
   }
 };
@@ -111,14 +117,14 @@ const checkListOnRender = (arr = []) => {
   });
 };
 
-drawFilters(configurationFilters);
-drawTasks(generateListConfigTasks(7));
+renderFilters(configurationFilters);
+renderTasks(taskComponentsList, generateListConfigTasks(7));
 
 const elementsFilter = document.querySelectorAll(`.filter__label`);
 
 for (let i = 0; i < elementsFilter.length; i++) {
   elementsFilter[i].addEventListener(`click`, () => {
     undrawOldTask();
-    drawTasks(generateListConfigTasks(Math.round(Math.random() * 7)));
+    renderTasks(taskComponentsList, generateListConfigTasks(Math.round(Math.random() * 7)));
   });
 }
