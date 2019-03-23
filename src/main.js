@@ -1,42 +1,42 @@
-import createFilter from "./create-filter";
-import renderField from './render-field';
 import Task from './task';
 import TaskEdit from './task-edit';
+import Filter from './filter';
 
 import ConfigTask from './config-task';
 
 let taskComponentsList = [];
 let editTaskComponentsList = [];
+const filterConponentsList = [];
 
 const configurationFilters = [
   {
-    id: `all`,
+    title: `all`,
     count: 9,
     checked: true
   },
   {
-    id: `overdue`,
+    title: `overdue`,
     count: 8
   },
   {
-    id: `today`,
+    title: `today`,
     count: 7
   },
   {
-    id: `favorites`,
+    title: `favorites`,
     count: 0
   },
   {
-    id: `repeating`,
+    title: `repeating`,
     count: 5
   },
   {
-    id: `tags`,
+    title: `tags`,
     count: 4
   },
   {
-    id: `archive`,
-    count: 3
+    title: `archive`,
+    count: 33
   }
 ];
 
@@ -49,9 +49,23 @@ const generateListConfigTasks = (count) => {
 };
 
 const renderFilters = (configFilters) => {
-  const createFiltersList = (config = []) => config.map(createFilter).join(``);
+  const filterContainer = document.querySelectorAll(`.main__filter`)[0];
 
-  renderField(`.main__filter`, createFiltersList(configFilters));
+  if (filterContainer) {
+    configFilters.forEach((element) => {
+      const filterComponent = new Filter(element);
+      filterConponentsList.push(filterComponent);
+
+      filterContainer.appendChild(filterComponent.render());
+
+      filterComponent.onFilter = () => {
+        console.log(`check filter`);
+        unrenderOldTask();
+        renderTasks(taskComponentsList, generateListConfigTasks(Math.round(Math.random() * 7)));
+      };
+
+    });
+  }
 };
 
 const renderTasks = (componentsList, configTask) => {
@@ -102,7 +116,7 @@ const renderTasks = (componentsList, configTask) => {
   }
 };
 
-const undrawOldTask = () => {
+const unrenderOldTask = () => {
   checkListOnRender(taskComponentsList);
   taskComponentsList = [];
   checkListOnRender(editTaskComponentsList);
@@ -121,12 +135,3 @@ const checkListOnRender = (arr = []) => {
 
 renderFilters(configurationFilters);
 renderTasks(taskComponentsList, generateListConfigTasks(7));
-
-const elementsFilter = document.querySelectorAll(`.filter__label`);
-
-for (let i = 0; i < elementsFilter.length; i++) {
-  elementsFilter[i].addEventListener(`click`, () => {
-    undrawOldTask();
-    renderTasks(taskComponentsList, generateListConfigTasks(Math.round(Math.random() * 7)));
-  });
-}
