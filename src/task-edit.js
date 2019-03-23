@@ -12,11 +12,14 @@ export default class TaskEdit extends AbstractComponentRender {
     this._dueDate = options.dueDate;
     this._repeatingDays = options.repeatingDays;
     this._color = options.color;
+    this._isArchive = options.isArchive;
     this._isFavorite = options.isFavorite;
     this._isDone = options.isDone;
     this._state = {};
     this._state.isDate = options.dueDate ? true : false;
     this._state.isRepeated = this._checkingMapOnTrueValue(options.repeatingDays);
+    this._onChangeArchive = this._onChangeArchive.bind(this);
+    this._onChangeFavorite = this._onChangeFavorite.bind(this);
     this._onChangeDate = this._onChangeDate.bind(this);
     this._onChangeRepeated = this._onChangeRepeated.bind(this);
     this._onSave = null;
@@ -38,13 +41,16 @@ export default class TaskEdit extends AbstractComponentRender {
                 <button type="button" class="card__btn card__btn--edit">
                   edit
                 </button>
-                <button type="button" class="card__btn card__btn--archive">
+                <button type="button" 
+                  class="card__btn card__btn--archive 
+                    ${this._isArchive ? `` : `card__btn--disabled`}
+                  ">
                   archive
                 </button>
-                <button
-                  type="button"
-                  class="card__btn card__btn--favorites card__btn--disabled"
-                >
+                <button type="button"
+                  class="card__btn card__btn--favorites 
+                    ${this._isFavorite ? `` : `card__btn--disabled`}
+                  ">
                   favorites
                 </button>
               </div>
@@ -290,6 +296,10 @@ export default class TaskEdit extends AbstractComponentRender {
       .addEventListener(`click`, this._onSaveButtonClick);
     this._element.querySelector(`.card__delete`)
       .addEventListener(`click`, this._onDeleteButtonClick);
+    this._element.querySelector(`.card__btn--archive`)
+      .addEventListener(`click`, this._onChangeArchive);
+    this._element.querySelector(`.card__btn--favorites`)
+      .addEventListener(`click`, this._onChangeFavorite);
     this._element.querySelector(`.card__date-deadline-toggle`)
         .addEventListener(`click`, this._onChangeDate);
     this._element.querySelector(`.card__repeat-toggle`)
@@ -318,10 +328,14 @@ export default class TaskEdit extends AbstractComponentRender {
       .removeEventListener(`submit`, this._onSaveButtonClick);
     this._element.querySelector(`.card__delete`)
       .removeEventListener(`click`, this._onDeleteButtonClick);
+    this._element.querySelector(`.card__btn--archive`)
+      .removeEventListener(`click`, this._onChangeArchive);
+    this._element.querySelector(`.card__btn--favorites`)
+      .removeEventListener(`click`, this._onChangeFavorite);
     this._element.querySelector(`.card__date-deadline-toggle`)
-        .removeEventListener(`click`, this._onChangeDate);
+      .removeEventListener(`click`, this._onChangeDate);
     this._element.querySelector(`.card__repeat-toggle`)
-        .removeEventListener(`click`, this._onChangeRepeated);
+      .removeEventListener(`click`, this._onChangeRepeated);
   }
 
   update(data) {
@@ -332,6 +346,22 @@ export default class TaskEdit extends AbstractComponentRender {
     this._repeatingDays = data.repeatingDays;
     this._state.isRepeated = this._checkingMapOnTrueValue(this._repeatingDays);
     this._color = data.color;
+    this._isArchive = data.isArchive;
+    this._isFavorite = data.isFavorite;
+  }
+
+  _onChangeArchive() {
+    this._isArchive = !this._isArchive;
+    this.removeListeners();
+    this._partialUpdate();
+    this.createListeners();
+  }
+
+  _onChangeFavorite() {
+    this._isFavorite = !this._isFavorite;
+    this.removeListeners();
+    this._partialUpdate();
+    this.createListeners();
   }
 
   _onChangeDate() {
@@ -368,6 +398,8 @@ export default class TaskEdit extends AbstractComponentRender {
         [`sa`, false],
         [`su`, false],
       ]),
+      isArchive: this._isArchive,
+      isFavorite: this._isFavorite,
     };
 
     const taskEditMapper = TaskEdit.createMapper(entry);

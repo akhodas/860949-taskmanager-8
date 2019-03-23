@@ -79,6 +79,8 @@ const renderTasks = (componentsList, configTask) => {
           newElement.repeatingDays = newObject.repeatingDays;
           newElement.dueDate = newObject.dueDate;
           newElement.isDate = newObject.isDate;
+          newElement.isArchive = newObject.isArchive;
+          newElement.isFavorite = newObject.isFavorite;
 
           taskComponent.update(newElement);
           taskComponent.render();

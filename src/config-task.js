@@ -32,6 +32,8 @@ export default class ConfigCard {
 
     this.picture = `http://picsum.photos/100/100?r=${Math.random()}`;
 
+    this.isArchive = (Math.random() - 0.7) > 0 ? true : false;
+
     this.isFavorite = (Math.random() - 0.7) > 0 ? true : false;
 
     this.isDone = (Math.random() - 0.7) > 0 ? true : false;
