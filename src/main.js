@@ -48,6 +48,40 @@ const generateListConfigTasks = (count) => {
   return listConfigTasks;
 };
 
+const filterTasks = (tasks, filterName) => {
+  switch (filterName) {
+    case `filter__all`:
+    case `filter__all-count`:
+      return tasks;
+
+    case `filter__overdue`:
+    case `filter__overdue-count`:
+      return tasks.filter((it) => it._dueDate < Date.now());
+
+    case `filter__today`:
+    case `filter__today-count`:
+      return tasks.filter((it) =>
+        new Date().toDateString() === new Date(it._dueDate).toDateString());
+
+    case `filter__favorites`:
+    case `filter__favorites-count`:
+      return tasks.filter((it) => it._isFavorite);
+
+    case `filter__repeating`:
+    case `filter__repeating-count`:
+      return tasks.filter((it) => it._state.isRepeated);
+    case `filter__tags`:
+    case `filter__tags-count`:
+      return tasks.filter((it) => it._tags.size);
+
+    case `filter__archive`:
+    case `filter__archive-count`:
+      return tasks.filter((it) => it._isArchive);
+    default :
+      return [];
+  }
+};
+
 const renderFilters = (configFilters) => {
   const filterContainer = document.querySelectorAll(`.main__filter`)[0];
 
@@ -58,10 +92,12 @@ const renderFilters = (configFilters) => {
 
       filterContainer.appendChild(filterComponent.render());
 
-      filterComponent.onFilter = () => {
-        console.log(`check filter`);
+      filterComponent.onFilter = (evt) => {
         unrenderOldTask();
-        renderTasks(taskComponentsList, generateListConfigTasks(Math.round(Math.random() * 7)));
+        const filterName = evt.target.htmlFor ? evt.target.htmlFor : evt.target.className;
+
+        const filteredTasks = filterTasks(taskComponentsList, filterName);
+        renderTasks(filteredTasks);
       };
 
     });
@@ -111,16 +147,16 @@ const renderTasks = (componentsList, configTask) => {
     }
 
     componentsList.forEach((element) => {
-      taskContainer.appendChild(element.render());
+      if (!element.isDeleted) {
+        taskContainer.appendChild(element.render());
+      }
     });
   }
 };
 
 const unrenderOldTask = () => {
   checkListOnRender(taskComponentsList);
-  taskComponentsList = [];
   checkListOnRender(editTaskComponentsList);
-  editTaskComponentsList = [];
 };
 
 const checkListOnRender = (arr = []) => {

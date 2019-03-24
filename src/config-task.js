@@ -10,10 +10,11 @@ export default class ConfigCard {
       `Пройти интенсив на соточку`
     ][Math.floor(Math.random() * 3)];
 
-    this.dueDate = (Math.random() - 0.7) > 0 ?
+    this.dueDate = (Math.random() - 0.5) > 0 ?
       Date.now()
         + Math.floor(Math.random() * 24 * 60) * 60 * 1000
         + Math.floor(Math.random() * 14) * 24 * 60 * 60 * 1000
+        - Math.floor(Math.random() * 28) * 24 * 60 * 60 * 1000
       : undefined;
 
     this.repeatingDays = new Map([

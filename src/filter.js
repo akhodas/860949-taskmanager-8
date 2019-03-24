@@ -35,10 +35,9 @@ export default class Filter extends AbstractComponentRender {
     this._onFilter = fn;
   }
 
-  _onFilterButtonClick() {
-    console.log(this._title);
+  _onFilterButtonClick(evt) {
     if (typeof this._onFilter === `function`) {
-      this._onFilter();
+      this._onFilter(evt);
     }
   }
 
