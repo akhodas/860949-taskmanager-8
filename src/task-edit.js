@@ -32,7 +32,7 @@ export default class TaskEdit extends AbstractComponentRender {
     return `
       <article class="card card--edit
       ${this._state.isRepeated ? `card--repeat` : ``}
-      ${(this._state.isDate && +this._dueDate - Date.now() < 7 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
+      ${(this._state.isDate && +this._dueDate - Date.now() < 3 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
       card--${this._color}
           ">
           <form class="card__form" method="get">

@@ -1,12 +1,14 @@
 import Task from './task';
 import TaskEdit from './task-edit';
 import Filter from './filter';
+import ButtonMenu from './button-menu';
 
 import ConfigTask from './config-task';
 
 let taskComponentsList = [];
 let editTaskComponentsList = [];
 const filterConponentsList = [];
+const buttonMenuConponentsList = [];
 
 const configurationFilters = [
   {
@@ -24,7 +26,7 @@ const configurationFilters = [
   },
   {
     title: `favorites`,
-    count: 0
+    count: 6
   },
   {
     title: `repeating`,
@@ -36,7 +38,27 @@ const configurationFilters = [
   },
   {
     title: `archive`,
-    count: 33
+    count: 3
+  }
+];
+
+const configurationButtonsMenu = [
+  {
+    id: `control__task`,
+    title: `TASKS`,
+    checked: true,
+  },
+  {
+    id: `control__new-task`,
+    title: `ADD NEW TASK`,
+  },
+  {
+    id: `control__statistic`,
+    title: `STATISTIC`,
+  },
+  {
+    id: `control__search`,
+    title: `SEARCH`,
   }
 ];
 
@@ -82,6 +104,27 @@ const filterTasks = (tasks, filterName) => {
   }
 };
 
+const changeContent = (buttonMenuName) => {
+  const COMMENT = `ФУНКЦИОНАЛ switch БУДЕТ УСЛОЖНЯТЬСЯ ДАЛЬШЕ, 
+    А СЕЙЧАС ЭТО ПРОСТАЯ РЕАЛИЗАЦИЯ С ЗАКЛАДКОЙ НА БУДУЩЕЕ`;
+  switch (buttonMenuName) {
+    case `control__task`:
+      return `board`;
+
+    case `control__new-task`:
+      return `result`;
+
+    case `control__statistic`:
+      return `statistic`;
+
+    case `control__search`:
+      return `main__search`;
+
+    default :
+      return COMMENT;
+  }
+};
+
 const renderFilters = (configFilters) => {
   const filterContainer = document.querySelectorAll(`.main__filter`)[0];
 
@@ -98,6 +141,37 @@ const renderFilters = (configFilters) => {
 
         const filteredTasks = filterTasks(taskComponentsList, filterName);
         renderTasks(filteredTasks);
+      };
+
+    });
+  }
+};
+
+const renderButtonsMenu = (configButtonsMenu) => {
+  const buttonMenuContainer = document.querySelectorAll(`.control__btn-wrap`)[0];
+
+  if (buttonMenuContainer) {
+    configButtonsMenu.forEach((element) => {
+      const buttonMenuComponent = new ButtonMenu(element);
+      buttonMenuConponentsList.push(buttonMenuComponent);
+
+      buttonMenuContainer.appendChild(buttonMenuComponent.render());
+
+      buttonMenuComponent.onButtonMenu = (evt) => {
+        const Sections = [`board`, `result`, `statistic`, `main__search`];
+        const buttonMenuName = evt.target.htmlFor;
+
+        const shownContent = changeContent(buttonMenuName);
+        Sections.forEach((section) => {
+          const container = document.querySelectorAll(`.${section}`)[0];
+          if (section === shownContent) {
+            container.classList.remove(`visually-hidden`);
+          } else {
+            container.classList.add(`visually-hidden`);
+          }
+        });
+        console.log(buttonMenuName + ` - ` + shownContent);
+        // renderTasks(filteredTasks);
       };
 
     });
@@ -170,4 +244,5 @@ const checkListOnRender = (arr = []) => {
 };
 
 renderFilters(configurationFilters);
+renderButtonsMenu(configurationButtonsMenu);
 renderTasks(taskComponentsList, generateListConfigTasks(7));

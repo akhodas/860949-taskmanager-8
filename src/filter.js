@@ -3,7 +3,6 @@ import AbstractComponentRender from './abstract-component-render';
 export default class Filter extends AbstractComponentRender {
   constructor(options) {
     super();
-    this._options = options;
     this._id = options.id;
     this._title = options.title;
     this._count = options.count;
