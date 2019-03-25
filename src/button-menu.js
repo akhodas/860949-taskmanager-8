@@ -28,7 +28,6 @@ export default class ButtonMenu extends AbstractComponentRender {
   }
 
   _onButtonMenuClick(evt) {
-    console.log(this._title);
     if (typeof this._onButtonMenu === `function`) {
       this._onButtonMenu(evt);
     }

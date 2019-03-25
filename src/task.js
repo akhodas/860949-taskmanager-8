@@ -124,6 +124,18 @@ export default class Task extends AbstractComponentRender {
     this._onEdit = fn;
   }
 
+  get color() {
+    return this._color;
+  }
+
+  get tags() {
+    return this._tags;
+  }
+
+  get dueDate() {
+    return this._dueDate;
+  }
+
   _checkingMapOnTrueValue(chekingMap) {
     for (const value of chekingMap.values()) {
       if (value) {

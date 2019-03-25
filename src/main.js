@@ -2,6 +2,7 @@ import Task from './task';
 import TaskEdit from './task-edit';
 import Filter from './filter';
 import ButtonMenu from './button-menu';
+import Statistic from './statistic';
 
 import ConfigTask from './config-task';
 
@@ -162,6 +163,7 @@ const renderButtonsMenu = (configButtonsMenu) => {
         const buttonMenuName = evt.target.htmlFor;
 
         const shownContent = changeContent(buttonMenuName);
+
         Sections.forEach((section) => {
           const container = document.querySelectorAll(`.${section}`)[0];
           if (section === shownContent) {
@@ -170,12 +172,18 @@ const renderButtonsMenu = (configButtonsMenu) => {
             container.classList.add(`visually-hidden`);
           }
         });
-        console.log(buttonMenuName + ` - ` + shownContent);
-        // renderTasks(filteredTasks);
       };
-
     });
   }
+};
+
+const renderStatistic = () => {
+  const statisticContainer = document.querySelectorAll(`.statistic`)[0];
+  const statisticComponent = new Statistic(taskComponentsList);
+
+  statisticContainer.appendChild(statisticComponent.render());
+
+  statisticComponent.diagram();
 };
 
 const renderTasks = (componentsList, configTask) => {
@@ -246,3 +254,5 @@ const checkListOnRender = (arr = []) => {
 renderFilters(configurationFilters);
 renderButtonsMenu(configurationButtonsMenu);
 renderTasks(taskComponentsList, generateListConfigTasks(7));
+renderStatistic();
+
