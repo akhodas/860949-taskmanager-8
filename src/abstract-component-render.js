@@ -7,10 +7,15 @@ export default class AbstractComponentRender {
     }
 
     this._element = null;
+    this._isDeleted = false;
   }
 
   get element() {
     return this._element;
+  }
+
+  get isDeleted() {
+    return this._isDeleted;
   }
 
   get template() {
@@ -27,6 +32,10 @@ export default class AbstractComponentRender {
     this.removeListeners();
     this._element.remove();
     this._element = null;
+  }
+
+  delete() {
+    this._isDeleted = true;
   }
 
   createListeners() {}

@@ -1,39 +1,65 @@
-import createFilter from "./create-filter";
-import drawField from './draw-field';
 import Task from './task';
 import TaskEdit from './task-edit';
+import Filter from './filter';
+import ButtonMenu from './button-menu';
+import Statistic from './statistic';
 
 import ConfigTask from './config-task';
 
+let taskComponentsList = [];
+let editTaskComponentsList = [];
+const filterConponentsList = [];
+const buttonMenuConponentsList = [];
+
 const configurationFilters = [
   {
-    id: `all`,
+    title: `all`,
     count: 9,
     checked: true
   },
   {
-    id: `overdue`,
+    title: `overdue`,
     count: 8
   },
   {
-    id: `today`,
+    title: `today`,
     count: 7
   },
   {
-    id: `favorites`,
-    count: 0
+    title: `favorites`,
+    count: 6
   },
   {
-    id: `repeating`,
+    title: `repeating`,
     count: 5
   },
   {
-    id: `tags`,
+    title: `tags`,
     count: 4
   },
   {
-    id: `archive`,
+    title: `archive`,
     count: 3
+  }
+];
+
+const configurationButtonsMenu = [
+  {
+    id: `control__task`,
+    title: `TASKS`,
+    checked: true,
+  },
+  {
+    id: `control__new-task`,
+    title: `ADD NEW TASK`,
+  },
+  {
+    id: `control__statistic`,
+    title: `STATISTIC`,
+  },
+  {
+    id: `control__search`,
+    title: `SEARCH`,
   }
 ];
 
@@ -45,60 +71,174 @@ const generateListConfigTasks = (count) => {
   return listConfigTasks;
 };
 
-const drawFilters = (configFilters) => {
-  const createFiltersList = (config = []) => config.map(createFilter).join(``);
+const filterTasks = (tasks, filterName) => {
+  switch (filterName) {
+    case `filter__all`:
+    case `filter__all-count`:
+      return tasks;
 
-  drawField(`.main__filter`, createFiltersList(configFilters));
+    case `filter__overdue`:
+    case `filter__overdue-count`:
+      return tasks.filter((it) => it._dueDate < Date.now());
+
+    case `filter__today`:
+    case `filter__today-count`:
+      return tasks.filter((it) =>
+        new Date().toDateString() === new Date(it._dueDate).toDateString());
+
+    case `filter__favorites`:
+    case `filter__favorites-count`:
+      return tasks.filter((it) => it._isFavorite);
+
+    case `filter__repeating`:
+    case `filter__repeating-count`:
+      return tasks.filter((it) => it._state.isRepeated);
+    case `filter__tags`:
+    case `filter__tags-count`:
+      return tasks.filter((it) => it._tags.size);
+
+    case `filter__archive`:
+    case `filter__archive-count`:
+      return tasks.filter((it) => it._isArchive);
+    default :
+      return [];
+  }
 };
 
-let taskComponentsList = [];
-let editTaskComponentsList = [];
+const changeContent = (buttonMenuName) => {
+  const COMMENT = `ФУНКЦИОНАЛ switch БУДЕТ УСЛОЖНЯТЬСЯ ДАЛЬШЕ, 
+    А СЕЙЧАС ЭТО ПРОСТАЯ РЕАЛИЗАЦИЯ С ЗАКЛАДКОЙ НА БУДУЩЕЕ`;
+  switch (buttonMenuName) {
+    case `control__task`:
+      return `board`;
 
-const drawTasks = (configTask) => {
-  const taskContainer = document.querySelectorAll(`.board__tasks`)[0];
+    case `control__new-task`:
+      return `result`;
 
-  if (taskContainer) {
-    configTask.forEach((element) => {
-      const taskComponent = new Task(element);
-      taskComponentsList.push(taskComponent);
-      const editTaskComponent = new TaskEdit(element);
-      editTaskComponentsList.push(editTaskComponent);
+    case `control__statistic`:
+      return `statistic`;
 
-      taskContainer.appendChild(taskComponent.render());
+    case `control__search`:
+      return `main__search`;
 
-      taskComponent.onEdit = () => {
-        editTaskComponent.render();
-        taskContainer.replaceChild(editTaskComponent.element, taskComponent.element);
-        taskComponent.unrender();
+    default :
+      return COMMENT;
+  }
+};
+
+const renderFilters = (configFilters) => {
+  const filterContainer = document.querySelectorAll(`.main__filter`)[0];
+
+  if (filterContainer) {
+    configFilters.forEach((element) => {
+      const filterComponent = new Filter(element);
+      filterConponentsList.push(filterComponent);
+
+      filterContainer.appendChild(filterComponent.render());
+
+      filterComponent.onFilter = (evt) => {
+        unrenderOldTask();
+        const filterName = evt.target.htmlFor ? evt.target.htmlFor : evt.target.className;
+
+        const filteredTasks = filterTasks(taskComponentsList, filterName);
+        renderTasks(filteredTasks);
       };
 
-      editTaskComponent.onSave = (newObject) => {
-        element.title = newObject.title;
-        element.tags = newObject.tags;
-        element.color = newObject.color;
-        element.repeatingDays = newObject.repeatingDays;
-        element.dueDate = newObject.dueDate;
-        element.isDate = newObject.isDate;
+    });
+  }
+};
 
-        taskComponent.update(element);
-        taskComponent.render();
-        taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
-        editTaskComponent.unrender();
-      };
-      editTaskComponent.onDelete = () => {
-        taskComponent.render();
-        taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
-        editTaskComponent.unrender();
+const renderButtonsMenu = (configButtonsMenu) => {
+  const buttonMenuContainer = document.querySelectorAll(`.control__btn-wrap`)[0];
+
+  if (buttonMenuContainer) {
+    configButtonsMenu.forEach((element) => {
+      const buttonMenuComponent = new ButtonMenu(element);
+      buttonMenuConponentsList.push(buttonMenuComponent);
+
+      buttonMenuContainer.appendChild(buttonMenuComponent.render());
+
+      buttonMenuComponent.onButtonMenu = (evt) => {
+        const Sections = [`board`, `result`, `statistic`, `main__search`];
+        const buttonMenuName = evt.target.htmlFor;
+
+        const shownContent = changeContent(buttonMenuName);
+
+        Sections.forEach((section) => {
+          const container = document.querySelectorAll(`.${section}`)[0];
+          if (section === shownContent) {
+            container.classList.remove(`visually-hidden`);
+          } else {
+            container.classList.add(`visually-hidden`);
+          }
+        });
       };
     });
   }
 };
 
-const undrawOldTask = () => {
+const renderStatistic = () => {
+  const statisticContainer = document.querySelectorAll(`.statistic`)[0];
+  const statisticComponent = new Statistic(taskComponentsList);
+
+  statisticContainer.appendChild(statisticComponent.render());
+
+  statisticComponent.diagram();
+};
+
+const renderTasks = (componentsList, configTask) => {
+  const taskContainer = document.querySelectorAll(`.board__tasks`)[0];
+
+  if (taskContainer) {
+    if (configTask) {
+      configTask.forEach((element) => {
+        const taskComponent = new Task(element);
+        componentsList.push(taskComponent);
+        const editTaskComponent = new TaskEdit(element);
+        editTaskComponentsList.push(editTaskComponent);
+
+        taskComponent.onEdit = () => {
+          editTaskComponent.render();
+          taskContainer.replaceChild(editTaskComponent.element, taskComponent.element);
+          taskComponent.unrender();
+        };
+
+        editTaskComponent.onSave = (newObject) => {
+          const newElement = {};
+          newElement.title = newObject.title;
+          newElement.tags = newObject.tags;
+          newElement.color = newObject.color;
+          newElement.repeatingDays = newObject.repeatingDays;
+          newElement.dueDate = newObject.dueDate;
+          newElement.isDate = newObject.isDate;
+          newElement.isArchive = newObject.isArchive;
+          newElement.isFavorite = newObject.isFavorite;
+
+          taskComponent.update(newElement);
+          taskComponent.render();
+          taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
+          editTaskComponent.unrender();
+        };
+        editTaskComponent.onDelete = () => {
+          taskComponent.delete();
+          taskContainer.removeChild(editTaskComponent.element);
+          editTaskComponent.unrender();
+          editTaskComponent.delete();
+        };
+      });
+    }
+
+    componentsList.forEach((element) => {
+      if (!element.isDeleted) {
+        taskContainer.appendChild(element.render());
+      }
+    });
+  }
+};
+
+const unrenderOldTask = () => {
   checkListOnRender(taskComponentsList);
-  taskComponentsList = [];
   checkListOnRender(editTaskComponentsList);
-  editTaskComponentsList = [];
 };
 
 const checkListOnRender = (arr = []) => {
@@ -111,14 +251,8 @@ const checkListOnRender = (arr = []) => {
   });
 };
 
-drawFilters(configurationFilters);
-drawTasks(generateListConfigTasks(7));
+renderFilters(configurationFilters);
+renderButtonsMenu(configurationButtonsMenu);
+renderTasks(taskComponentsList, generateListConfigTasks(7));
+renderStatistic();
 
-const elementsFilter = document.querySelectorAll(`.filter__label`);
-
-for (let i = 0; i < elementsFilter.length; i++) {
-  elementsFilter[i].addEventListener(`click`, () => {
-    undrawOldTask();
-    drawTasks(generateListConfigTasks(Math.round(Math.random() * 7)));
-  });
-}

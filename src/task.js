@@ -11,6 +11,7 @@ export default class Task extends AbstractComponentRender {
     this._dueDate = options.dueDate;
     this._repeatingDays = options.repeatingDays;
     this._color = options.color;
+    this._isArchive = options.isArchive;
     this._isFavorite = options.isFavorite;
     this._isDone = options.isDone;
     this._state = {};
@@ -24,22 +25,26 @@ export default class Task extends AbstractComponentRender {
     return `
     <article class="card     
     ${this._state.isRepeated ? `card--repeat` : ``}
-    ${(this._state.isDate && +this._dueDate - Date.now() < 7 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
+    ${(this._state.isDate && +this._dueDate - Date.now() < 3 * 24 * 60 * 60 * 1000) ? `card--deadline` : ``}
     card--${this._color}
         ">
         <form class="card__form" method="get">
           <div class="card__inner">
             <div class="card__control">
-              <button type="button" class="card__btn card__btn--edit">
+              <button 
+                type="button" class="card__btn card__btn--edit">
                 edit
               </button>
-              <button type="button" class="card__btn card__btn--archive">
+              <button type="button" 
+                class="card__btn card__btn--archive 
+                  ${this._isArchive ? `` : `card__btn--disabled`}
+                ">
                 archive
               </button>
-              <button
-                type="button"
-                class="card__btn card__btn--favorites card__btn--disabled"
-              >
+              <button type="button"
+                class="card__btn card__btn--favorites 
+                  ${this._isFavorite ? `` : `card__btn--disabled`}
+                ">
                 favorites
               </button>
             </div>
@@ -117,6 +122,18 @@ export default class Task extends AbstractComponentRender {
 
   set onEdit(fn) {
     this._onEdit = fn;
+  }
+
+  get color() {
+    return this._color;
+  }
+
+  get tags() {
+    return this._tags;
+  }
+
+  get dueDate() {
+    return this._dueDate;
   }
 
   _checkingMapOnTrueValue(chekingMap) {
@@ -280,6 +297,8 @@ export default class Task extends AbstractComponentRender {
     this._repeatingDays = data.repeatingDays;
     this._state.isRepeated = this._checkingMapOnTrueValue(this._repeatingDays);
     this._color = data.color;
+    this._isArchive = data.isArchive;
+    this._isFavorite = data.isFavorite;
   }
 
 }

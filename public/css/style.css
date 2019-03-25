@@ -73,6 +73,9 @@ body {
   line-height: 23px;
   margin: 0 auto 0 0;
 }
+.control__btn-wrap>div {
+  display: inline-flex;
+}
 .control__label {
   font-size: 16px;
   display: inline-flex;
