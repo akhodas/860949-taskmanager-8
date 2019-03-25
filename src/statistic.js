@@ -9,16 +9,16 @@ export default class Statistic extends AbstractComponentRender {
     this._dateStart = new Date().getTime() - 7 * 24 * 60 * 60 * 1000;
     this._dateFinish = new Date().getTime();
     this._statTags = {
-      labels: [`#watchstreams`, `#relaxation`, `#coding`, `#sleep`, `#watermelonpies`],
-      data: [20, 15, 10, 5, 2]
+      labels: [],
+      data: []
     };
     this._statColors = {
-      labels: [`pink`, `yellow`, `blue`, `black`, `green`],
-      data: [5, 25, 15, 10, 30]
+      labels: [],
+      data: []
     };
     this._statDays = {
-      labels: [`01 FEB`, `02 FEB`, `03 FEB`, `04 FEB`, `05 FEB`, `06 FEB`, `07 FEB`],
-      data: [4, 6, 3, 1, 5, 2, 0]
+      labels: [],
+      data: []
     };
     this._onRangeDate = this._defaultFunctionRangeDate;
     this._onDateClick = this._onDateClick.bind(this);
@@ -109,6 +109,7 @@ export default class Statistic extends AbstractComponentRender {
 
   _defaultFunctionRangeDate(evt) {
     const rangeDate = evt.target.value;
+
     this._dateStart = new Date(rangeDate.split(` to `)[0]).getTime();
     this._dateFinish = new Date(rangeDate.split(` to `)[1]).getTime();
   }
@@ -118,7 +119,7 @@ export default class Statistic extends AbstractComponentRender {
       this._onRangeDate(evt);
     }
 
-    if (this._counter > 0) {
+    if (this._counter > 0 && evt.target.value.length > 15) {
       this._counter = 0;
       this.removeListeners();
       this._partialUpdate();
@@ -134,8 +135,8 @@ export default class Statistic extends AbstractComponentRender {
   }
 
   createListeners() {
-    this._element.querySelectorAll(`.statistic-input-wrap`)[0]
-      .addEventListener(`click`, this._onDateClick);
+    this._element.querySelectorAll(`.statistic-input-wrap input`)[0]
+      .addEventListener(`input`, this._onDateClick);
 
     setTimeout(() => {
       flatpickr(`.statistic__period-input`,
@@ -149,8 +150,8 @@ export default class Statistic extends AbstractComponentRender {
   }
 
   removeListeners() {
-    this._element.querySelectorAll(`.statistic-input-wrap`)[0]
-      .removeEventListener(`click`, this._onDateClick);
+    this._element.querySelectorAll(`.statistic-input-wrap  input`)[0]
+      .removeEventListener(`input`, this._onDateClick);
   }
 
   diagram() {
