@@ -5,11 +5,9 @@ import ButtonMenu from './button-menu';
 import Statistic from './statistic';
 import API from './api';
 
-import ConfigTask from './config-task';
 import ModelTask from './model-task';
 
-const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=132`;
-// const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
+const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
 const END_POINT = `https://es8-demo-srv.appspot.com/task-manager`;
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
@@ -70,14 +68,6 @@ const configurationButtonsMenu = [
     title: `SEARCH`,
   }
 ];
-
-const generateListConfigTasks = (count) => {
-  const listConfigTasks = [];
-  for (let i = 0; i < count; i++) {
-    listConfigTasks.push(new ConfigTask());
-  }
-  return listConfigTasks;
-};
 
 const filterTasks = (tasks, filterName) => {
   switch (filterName) {
@@ -231,14 +221,9 @@ const renderTasks = (componentsList, configTask) => {
             taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
             editTaskComponent.unrender();
           });
-
-          // taskComponent.update(newElement);
-          // taskComponent.render();
-          // taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
-          // editTaskComponent.unrender();
         };
         editTaskComponent.onDelete = (id, thisElement) => {
-          // api.deleteTask({id})
+          // api.deleteTask({id}, thisElement)
           // .then(() => {
           //   unrenderOldTask();
           //   taskComponentsList = [];
@@ -284,11 +269,9 @@ const checkListOnRender = (arr = []) => {
 
 renderFilters(configurationFilters);
 renderButtonsMenu(configurationButtonsMenu);
-// renderTasks(taskComponentsList, generateListConfigTasks(7));
 
 api.getTasks()
   .then((tasks) => {
-    console.log(tasks);
     renderTasks(taskComponentsList, tasks);
   });
 

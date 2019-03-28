@@ -11,7 +11,7 @@ const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
-    throw new Error(`${response.status}: ${response.statusText} 123`);
+    throw new Error(`${response.status}: ${response.statusText}`);
   }
 };
 
@@ -86,18 +86,16 @@ export default class API {
   deleteTask({id}, element) {
     this._blok(element);
     element.querySelector(`.card__delete`).textContent = `Deleting...`;
-    const result = ``;
-    try {
-      result = this._load({url: `tasks/${id}`, method: Method.DELETE});
-    } catch (err) {
-      setTimeout(() => {
+    return this._load({url: `tasks/${id}`, method: Method.DELETE})
+      .then((response) => {
+        return response;
+      })
+      .catch((err) => {
         this._shake(element);
         element.querySelector(`.card__delete`).textContent = `Delete`;
         this._unblok(element);
         throw err;
-      }, this._timeBlockForError);
-    }
-    return result;
+      });
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
@@ -107,7 +105,6 @@ export default class API {
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)
       .catch((err) => {
-        console.error(`fetch error: ${err} 123`);
         throw err;
       });
   }
