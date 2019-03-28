@@ -7,7 +7,7 @@ export default class Statistic extends AbstractComponentRender {
     super();
     this.list = list;
     this._dateStart = new Date().getTime() - 7 * 24 * 60 * 60 * 1000;
-    this._dateFinish = new Date().getTime();
+    this._dateFinish = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
     this._statTags = {
       labels: [],
       data: []

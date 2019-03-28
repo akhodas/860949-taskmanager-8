@@ -3,8 +3,16 @@ import TaskEdit from './task-edit';
 import Filter from './filter';
 import ButtonMenu from './button-menu';
 import Statistic from './statistic';
+import API from './api';
 
 import ConfigTask from './config-task';
+import ModelTask from './model-task';
+
+const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=132`;
+// const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
+const END_POINT = `https://es8-demo-srv.appspot.com/task-manager`;
+
+const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 
 let taskComponentsList = [];
 let editTaskComponentsList = [];
@@ -203,27 +211,50 @@ const renderTasks = (componentsList, configTask) => {
           taskComponent.unrender();
         };
 
-        editTaskComponent.onSave = (newObject) => {
+        editTaskComponent.onSave = (newObject, thisElement) => {
           const newElement = {};
+          newElement.id = newObject.id;
+          newElement.picture = newObject.picture;
           newElement.title = newObject.title;
           newElement.tags = newObject.tags;
           newElement.color = newObject.color;
           newElement.repeatingDays = newObject.repeatingDays;
           newElement.dueDate = newObject.dueDate;
           newElement.isDate = newObject.isDate;
-          newElement.isArchive = newObject.isArchive;
+          newElement.isDone = newObject.isDone;
           newElement.isFavorite = newObject.isFavorite;
 
-          taskComponent.update(newElement);
-          taskComponent.render();
-          taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
-          editTaskComponent.unrender();
+          api.updateTask({id: newElement.id, data: ModelTask.toRawForToSend(newElement)}, thisElement)
+          .then((newTask) => {
+            taskComponent.update(newTask);
+            taskComponent.render();
+            taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
+            editTaskComponent.unrender();
+          });
+
+          // taskComponent.update(newElement);
+          // taskComponent.render();
+          // taskContainer.replaceChild(taskComponent.element, editTaskComponent.element);
+          // editTaskComponent.unrender();
         };
-        editTaskComponent.onDelete = () => {
-          taskComponent.delete();
-          taskContainer.removeChild(editTaskComponent.element);
-          editTaskComponent.unrender();
-          editTaskComponent.delete();
+        editTaskComponent.onDelete = (id, thisElement) => {
+          // api.deleteTask({id})
+          // .then(() => {
+          //   unrenderOldTask();
+          //   taskComponentsList = [];
+          //   editTaskComponentsList = [];
+          //   return api.getTasks();
+          // })
+          // .then((tasks) => renderTasks(taskComponentsList, tasks))
+          // .catch(alert);
+          api.deleteTask({id}, thisElement)
+          .then(() => {
+            taskComponent.delete();
+            taskContainer.removeChild(editTaskComponent.element);
+            editTaskComponent.unrender();
+            editTaskComponent.delete();
+          })
+          .catch(alert);
         };
       });
     }
@@ -253,6 +284,15 @@ const checkListOnRender = (arr = []) => {
 
 renderFilters(configurationFilters);
 renderButtonsMenu(configurationButtonsMenu);
-renderTasks(taskComponentsList, generateListConfigTasks(7));
-renderStatistic();
+// renderTasks(taskComponentsList, generateListConfigTasks(7));
+
+api.getTasks()
+  .then((tasks) => {
+    console.log(tasks);
+    renderTasks(taskComponentsList, tasks);
+  });
+
+setTimeout(() => {
+  renderStatistic();
+}, 1000);
 

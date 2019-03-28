@@ -12,13 +12,12 @@ export default class TaskEdit extends AbstractComponentRender {
     this._dueDate = options.dueDate;
     this._repeatingDays = options.repeatingDays;
     this._color = options.color;
-    this._isArchive = options.isArchive;
     this._isFavorite = options.isFavorite;
     this._isDone = options.isDone;
     this._state = {};
     this._state.isDate = options.dueDate ? true : false;
     this._state.isRepeated = this._checkingMapOnTrueValue(options.repeatingDays);
-    this._onChangeArchive = this._onChangeArchive.bind(this);
+    this._onChangeDone = this._onChangeDone.bind(this);
     this._onChangeFavorite = this._onChangeFavorite.bind(this);
     this._onChangeDate = this._onChangeDate.bind(this);
     this._onChangeRepeated = this._onChangeRepeated.bind(this);
@@ -43,7 +42,7 @@ export default class TaskEdit extends AbstractComponentRender {
                 </button>
                 <button type="button" 
                   class="card__btn card__btn--archive 
-                    ${this._isArchive ? `` : `card__btn--disabled`}
+                    ${this._isDone ? `` : `card__btn--disabled`}
                   ">
                   archive
                 </button>
@@ -279,7 +278,7 @@ export default class TaskEdit extends AbstractComponentRender {
     const newData = this._processForm(formData);
 
     if (typeof this._onSave === `function`) {
-      this._onSave(newData);
+      this._onSave(newData, this.element);
     }
     this.update(newData);
   }
@@ -287,7 +286,7 @@ export default class TaskEdit extends AbstractComponentRender {
   _onDeleteButtonClick(evt) {
     evt.preventDefault();
     if (typeof this._onDelete === `function`) {
-      this._onDelete();
+      this._onDelete(this._id, this.element);
     }
   }
 
@@ -297,7 +296,7 @@ export default class TaskEdit extends AbstractComponentRender {
     this._element.querySelector(`.card__delete`)
       .addEventListener(`click`, this._onDeleteButtonClick);
     this._element.querySelector(`.card__btn--archive`)
-      .addEventListener(`click`, this._onChangeArchive);
+      .addEventListener(`click`, this._onChangeDone);
     this._element.querySelector(`.card__btn--favorites`)
       .addEventListener(`click`, this._onChangeFavorite);
     this._element.querySelector(`.card__date-deadline-toggle`)
@@ -329,7 +328,7 @@ export default class TaskEdit extends AbstractComponentRender {
     this._element.querySelector(`.card__delete`)
       .removeEventListener(`click`, this._onDeleteButtonClick);
     this._element.querySelector(`.card__btn--archive`)
-      .removeEventListener(`click`, this._onChangeArchive);
+      .removeEventListener(`click`, this._onChangeDone);
     this._element.querySelector(`.card__btn--favorites`)
       .removeEventListener(`click`, this._onChangeFavorite);
     this._element.querySelector(`.card__date-deadline-toggle`)
@@ -346,12 +345,12 @@ export default class TaskEdit extends AbstractComponentRender {
     this._repeatingDays = data.repeatingDays;
     this._state.isRepeated = this._checkingMapOnTrueValue(this._repeatingDays);
     this._color = data.color;
-    this._isArchive = data.isArchive;
+    this._isDone = data.isDone;
     this._isFavorite = data.isFavorite;
   }
 
-  _onChangeArchive() {
-    this._isArchive = !this._isArchive;
+  _onChangeDone() {
+    this._isDone = !this._isDone;
     this.removeListeners();
     this._partialUpdate();
     this.createListeners();
@@ -384,6 +383,8 @@ export default class TaskEdit extends AbstractComponentRender {
 
   _processForm(formData) {
     const entry = {
+      id: this._id,
+      picture: this._picture,
       title: ``,
       color: ``,
       tags: new Set(),
@@ -398,7 +399,7 @@ export default class TaskEdit extends AbstractComponentRender {
         [`sa`, false],
         [`su`, false],
       ]),
-      isArchive: this._isArchive,
+      isDone: this._isDone,
       isFavorite: this._isFavorite,
     };
 
@@ -436,5 +437,27 @@ export default class TaskEdit extends AbstractComponentRender {
       },
     };
   }
+
+  // _mapToObject(map) {
+  //   const obj = {};
+  //   map.forEach((value, key) => {
+  //     obj[key] = value;
+  //   });
+  //   return obj;
+  // }
+
+  // toRAW() {
+  //   return {
+  //     'id': this._id,
+  //     'title': this._title,
+  //     'due_date': this._dueDate,
+  //     'tags': [...this._tags.values()],
+  //     'picture': this._picture,
+  //     'repeating_days': this._mapToObject(this._repeatingDays),
+  //     'color': this._color,
+  //     'is_favorite': this._isFavorite,
+  //     'is_done': this._isDone,
+  //   };
+  // }
 
 }

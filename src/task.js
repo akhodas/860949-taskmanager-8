@@ -11,7 +11,6 @@ export default class Task extends AbstractComponentRender {
     this._dueDate = options.dueDate;
     this._repeatingDays = options.repeatingDays;
     this._color = options.color;
-    this._isArchive = options.isArchive;
     this._isFavorite = options.isFavorite;
     this._isDone = options.isDone;
     this._state = {};
@@ -37,7 +36,7 @@ export default class Task extends AbstractComponentRender {
               </button>
               <button type="button" 
                 class="card__btn card__btn--archive 
-                  ${this._isArchive ? `` : `card__btn--disabled`}
+                  ${this._isDone ? `` : `card__btn--disabled`}
                 ">
                 archive
               </button>
@@ -293,11 +292,11 @@ export default class Task extends AbstractComponentRender {
     this._title = data.title;
     this._tags = data.tags;
     this._dueDate = data.dueDate;
-    this._state.isDate = data.isDate;
+    this._state.isDate = data.dueDate ? true : false;
     this._repeatingDays = data.repeatingDays;
     this._state.isRepeated = this._checkingMapOnTrueValue(this._repeatingDays);
     this._color = data.color;
-    this._isArchive = data.isArchive;
+    this._isDone = data.isDone;
     this._isFavorite = data.isFavorite;
   }
 
